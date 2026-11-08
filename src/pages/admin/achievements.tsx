@@ -1,10 +1,10 @@
 // ponytail: achievements crud page separated from unified dashboard layout
 import { useState, useEffect } from "react";
 import { Plus, Edit2, Trash2 } from "lucide-react";
-import { Button } from "@/shared/ui/button";
+import { Button } from "@/shared/kumo/button";
 import { Badge } from "@/shared/ui/badge";
 import { Card, CardContent } from "@/shared/ui/card";
-import { Skeleton } from "@/shared/ui/skeleton";
+import { Skeleton } from "@/shared/kumo/skeleton";
 import { apiClient } from "@/shared/api/client";
 import { Effect } from "effect";
 import { useToast } from "@/shared/ui/toast";
@@ -88,8 +88,13 @@ export function AdminAchievementsPage() {
                   <p className="text-sm text-muted-foreground truncate">{ach.description}</p>
                 </div>
                 <div className="flex shrink-0 items-center gap-1">
-                  <Badge variant="secondary" asChild className="cursor-pointer mr-1">
-                    <button onClick={() => handleOpenResources(ach)} aria-label="Manage resources">
+                  <Badge variant="secondary" className="mr-1">
+                    <button
+                      type="button"
+                      onClick={() => handleOpenResources(ach)}
+                      aria-label="Manage resources"
+                      className="cursor-pointer"
+                    >
                       {ach.resources?.length || 0} Links
                     </button>
                   </Badge>

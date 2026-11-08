@@ -18,7 +18,7 @@ export function FormErrorMessage({
     <div className="transition-all duration-300 ease-in-out overflow-hidden">
       <div
         className={cn(
-          'text-destructive text-xs block animate-in fade-in slide-in-from-top-1 duration-300',
+          'block animate-in text-xs text-kumo-danger fade-in slide-in-from-top-1 duration-300',
           className,
         )}
       >

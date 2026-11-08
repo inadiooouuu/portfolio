@@ -1,7 +1,7 @@
 // ponytail: separate project gallery manager sheet component
 import { useState } from "react";
 import { Loader2, Trash2, Image as ImageIcon } from "lucide-react";
-import { Button } from "@/shared/ui/button";
+import { Button } from "@/shared/kumo/button";
 import { FormField } from "@/shared/ui/form";
 import {
   Sheet,

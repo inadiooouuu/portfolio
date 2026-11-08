@@ -1,4 +1,6 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
+import { BrowserRouter, Routes, Route, Navigate, Link as RouterLink } from "react-router-dom"
+import * as React from "react"
+import { LinkProvider } from "@cloudflare/kumo"
 import { HomePage } from "@/pages/home"
 import { AboutPage } from "@/pages/about"
 import { ProjectDetailPage } from "@/pages/project-detail"
@@ -28,6 +30,14 @@ const queryClient = new QueryClient({
   },
 })
 
+const KumoRouterLink = React.forwardRef<
+  HTMLAnchorElement,
+  React.AnchorHTMLAttributes<HTMLAnchorElement> & { href?: string }
+>(({ href, ...props }, ref) => (
+  <RouterLink ref={ref} to={href ?? "/"} {...props} />
+))
+KumoRouterLink.displayName = "KumoRouterLink"
+
 function App() {
   useGridPattern()
 
@@ -36,32 +46,34 @@ function App() {
       <ToastProviderWrapper>
         <CustomCursor />
         <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/about" element={<AboutPage />} />
-            <Route path="/projects" element={<ProjectsPage />} />
-            <Route path="/projects/:slug" element={<ProjectDetailPage />} />
-            <Route path="/admin/login" element={<AdminLoginPage />} />
+          <LinkProvider component={KumoRouterLink}>
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/about" element={<AboutPage />} />
+              <Route path="/projects" element={<ProjectsPage />} />
+              <Route path="/projects/:slug" element={<ProjectDetailPage />} />
+              <Route path="/admin/login" element={<AdminLoginPage />} />
 
-            {/* protected admin layout wrapper */}
-            <Route path="/admin" element={<AdminDashboardPage />}>
-              <Route index element={<Navigate to="/admin/projects" replace />} />
-              <Route path="dashboard" element={<Navigate to="/admin/projects" replace />} />
-              <Route path="projects" element={<AdminProjectsPage />} />
-              <Route path="stacks" element={<AdminStacksPage />} />
-              <Route path="articles" element={<AdminArticlesPage />} />
-              <Route path="achievements" element={<AdminAchievementsPage />} />
-              <Route path="work" element={<AdminWorkPage />} />
-              <Route path="storage" element={<AdminStoragePage />} />
-              <Route path="profile" element={<AdminProfilePage />} />
-            </Route>
+              {/* protected admin layout wrapper */}
+              <Route path="/admin" element={<AdminDashboardPage />}>
+                <Route index element={<Navigate to="/admin/projects" replace />} />
+                <Route path="dashboard" element={<Navigate to="/admin/projects" replace />} />
+                <Route path="projects" element={<AdminProjectsPage />} />
+                <Route path="stacks" element={<AdminStacksPage />} />
+                <Route path="articles" element={<AdminArticlesPage />} />
+                <Route path="achievements" element={<AdminAchievementsPage />} />
+                <Route path="work" element={<AdminWorkPage />} />
+                <Route path="storage" element={<AdminStoragePage />} />
+                <Route path="profile" element={<AdminProfilePage />} />
+              </Route>
 
-            {/* Legacy redirect for /admin/dashboard */}
-            <Route path="/admin/dashboard" element={<Navigate to="/admin/projects" replace />} />
+              {/* Legacy redirect for /admin/dashboard */}
+              <Route path="/admin/dashboard" element={<Navigate to="/admin/projects" replace />} />
 
-            {/* Catch-all 404 */}
-            <Route path="*" element={<NotFoundPage />} />
-          </Routes>
+              {/* Catch-all 404 */}
+              <Route path="*" element={<NotFoundPage />} />
+            </Routes>
+          </LinkProvider>
         </BrowserRouter>
       </ToastProviderWrapper>
     </QueryClientProvider>

@@ -19,7 +19,7 @@ function ProjectLink({
 
   return (
     <Button
-      className="bg-black rounded-full"
+      className="h-8 rounded-full bg-black px-3 text-xs ring-0 bg-none"
       size="sm"
       onClick={handleOnClick}
       asChild
@@ -42,7 +42,7 @@ function ProjectRepository({
   }, [url]);
 
   return (
-    <Button className="bg-black rounded-full" onClick={handleOnClick} size="sm">
+    <Button className="h-8 rounded-full bg-black px-3 text-xs ring-0 bg-none" onClick={handleOnClick} size="sm">
       <Github />
       {children}
     </Button>

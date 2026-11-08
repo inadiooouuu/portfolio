@@ -3,7 +3,7 @@ import * as React from "react";
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Image as ImageIcon, Loader2, Trash2 } from "lucide-react";
-import { Button } from "@/shared/ui/button";
+import { Button } from "@/shared/kumo/button";
 import { FormField } from "@/shared/ui/form";
 import {
   Sheet,

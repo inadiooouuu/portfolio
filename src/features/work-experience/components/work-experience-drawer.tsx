@@ -1,6 +1,6 @@
 // ponytail: separate work experience edit/create sheet component
 import { Loader2 } from "lucide-react";
-import { Button } from "@/shared/ui/button";
+import { Button } from "@/shared/kumo/button";
 import {
   Sheet,
   SheetContent,

@@ -5,9 +5,9 @@ import { cn } from "@/shared/lib/utils"
 
 const SIDEBAR_COOKIE_NAME = "sidebar:state"
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7
-const SIDEBAR_WIDTH = "16rem"
+const SIDEBAR_WIDTH = "15rem"
 const SIDEBAR_WIDTH_MOBILE = "18rem"
-const SIDEBAR_WIDTH_ICON = "3rem"
+const SIDEBAR_WIDTH_ICON = "3.5rem"
 const SIDEBAR_KEYBOARD_SHORTCUT = "b"
 
 type SidebarContext = {
@@ -247,7 +247,7 @@ export const SidebarTrigger = React.forwardRef<
         ref={ref}
         data-sidebar="trigger"
         className={cn(
-          "inline-flex h-7 w-7 items-center justify-center rounded-md border border-border bg-background hover:bg-muted cursor-pointer transition-colors outline-none",
+          "inline-flex size-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 cursor-pointer",
           className
         )}
         onClick={(event) => {
@@ -272,7 +272,7 @@ export const SidebarContent = React.forwardRef<
       ref={ref}
       data-sidebar="content"
       className={cn(
-        "flex-1 flex flex-col gap-4 overflow-y-auto overflow-x-hidden p-3",
+        "flex-1 flex flex-col gap-3 overflow-y-auto overflow-x-hidden p-2",
         className
       )}
       {...props}
@@ -289,7 +289,7 @@ export const SidebarHeader = React.forwardRef<
     <div
       ref={ref}
       data-sidebar="header"
-      className={cn("flex flex-col gap-2 p-4 border-b border-sidebar-border shrink-0", className)}
+      className={cn("flex flex-col gap-2 p-3 border-b border-sidebar-border shrink-0", className)}
       {...props}
     />
   )
@@ -304,7 +304,7 @@ export const SidebarFooter = React.forwardRef<
     <div
       ref={ref}
       data-sidebar="footer"
-      className={cn("flex flex-col gap-2 p-4 border-t border-sidebar-border shrink-0", className)}
+      className={cn("flex flex-col gap-2 p-3 border-t border-sidebar-border shrink-0", className)}
       {...props}
     />
   )
@@ -319,7 +319,7 @@ export const SidebarGroup = React.forwardRef<
     <div
       ref={ref}
       data-sidebar="group"
-      className={cn("flex flex-col gap-1.5", className)}
+      className={cn("flex flex-col gap-1", className)}
       {...props}
     />
   )
@@ -337,7 +337,7 @@ export const SidebarGroupLabel = React.forwardRef<
       ref={ref}
       data-sidebar="group-label"
       className={cn(
-        "px-2 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-0.5",
+        "px-2 mb-0.5 text-[10px] font-semibold text-muted-foreground uppercase tracking-[0.08em]",
         className
       )}
       {...props}
@@ -407,11 +407,11 @@ export const SidebarMenuButton = React.forwardRef<
       data-sidebar="menu-button"
       data-active={isActive}
       className={cn(
-        "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:bg-sidebar-accent focus-visible:text-sidebar-accent-foreground [&>svg]:size-4 [&>svg]:shrink-0 flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm text-left transition-colors outline-none cursor-pointer border border-transparent select-none",
+        "relative flex h-8 w-full items-center gap-2.5 rounded-md px-2.5 text-left text-[13px] font-medium text-muted-foreground outline-none transition-colors hover:bg-muted hover:text-foreground focus-visible:bg-muted focus-visible:text-foreground [&>svg]:size-4 [&>svg]:shrink-0 [&>svg]:text-muted-foreground/80 cursor-pointer select-none",
         isActive
-          ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium shadow-xs"
-          : "text-muted-foreground",
-        state === "collapsed" ? "justify-center px-0" : "",
+          ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium [&>svg]:text-[var(--kumo-sidebar-active-icon)] before:absolute before:inset-y-1.5 before:left-0 before:w-0.5 before:rounded-full before:bg-[var(--color-cloudflare-orange)]"
+          : "",
+        state === "collapsed" ? "justify-center px-0 before:hidden" : "",
         className
       )}
       {...props}

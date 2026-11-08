@@ -63,6 +63,7 @@ export function FormPasswordField<TFieldValues extends FieldValues>({
           type={showPassword ? 'text' : 'password'}
           placeholder={placeholder}
           disabled={disabled}
+          variant={error ? 'error' : 'default'}
           className={cn('pr-10', prefixIcon && 'pl-10', inputClassName)}
           {...register(name, { onChange })}
         />

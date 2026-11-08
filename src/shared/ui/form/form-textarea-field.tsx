@@ -53,6 +53,7 @@ export function FormTextAreaField<TFieldValues extends FieldValues>({
         placeholder={placeholder}
         rows={rows}
         disabled={disabled}
+        variant={error ? 'error' : 'default'}
         className={cn(inputClassName)}
         {...register(name, { onChange })}
       />

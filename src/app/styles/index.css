@@ -1,4 +1,6 @@
+@source "../../../node_modules/@cloudflare/kumo/dist/**/*.{js,jsx,ts,tsx}";
 @import "@fontsource-variable/geist";
+@import "@cloudflare/kumo/styles/tailwind";
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
@@ -8,6 +10,11 @@
     --font-sans: "Geist Variable", system-ui, sans-serif;
     --font-serif: "Geist Variable", system-ui, sans-serif;
     --font-mono: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    /* Kumo brand is the blue used for primary actions/buttons. */
+    --color-kumo-brand: oklch(0.5772 0.2324 260);
+    /* Cloudflare logo/marketing orange, kept for brand accents. */
+    --color-cloudflare-orange: #f6821f;
+    --color-kumo-surface: #f7f7f7;
 }
 
 @theme inline {
@@ -71,13 +78,25 @@
     --ring: oklch(0.708 0 0);
     --radius: 0.625rem;
     --sidebar: oklch(0.985 0 0);
-    --sidebar-foreground: oklch(0.145 0 0);
-    --sidebar-primary: oklch(0.205 0 0);
-    --sidebar-primary-foreground: oklch(0.985 0 0);
-    --sidebar-accent: oklch(0.97 0 0);
-    --sidebar-accent-foreground: oklch(0.205 0 0);
+    --sidebar-foreground: oklch(0.205 0 0);
+    --sidebar-primary: #f6821f;
+    --sidebar-primary-foreground: #ffffff;
+    --sidebar-accent: #fff4e8;
+    --sidebar-accent-foreground: #9a3412;
     --sidebar-border: oklch(0.922 0 0);
-    --sidebar-ring: oklch(0.708 0 0);
+    --sidebar-ring: #f6821f;
+
+    /* Cloudflare Kumo-style emphasis button tokens */
+    --kumo-button-emphasis-ring: color-mix(in oklch, var(--color-kumo-brand), black 10%);
+    --kumo-button-emphasis-bg: color-mix(in oklch, var(--color-kumo-brand), white 30%);
+    --kumo-button-emphasis-gradient-start: color-mix(in oklch, var(--color-kumo-brand), white 15%);
+    --kumo-button-emphasis-gradient-end: var(--color-kumo-brand);
+    --kumo-button-danger-ring: color-mix(in oklch, var(--destructive), black 10%);
+    --kumo-button-danger-bg: color-mix(in oklch, var(--destructive), white 12%);
+    --kumo-button-danger-gradient-start: color-mix(in oklch, var(--destructive), white 8%);
+    --kumo-button-danger-gradient-end: var(--destructive);
+    --kumo-sidebar-active-icon: #ea580c;
+
     font-family: var(--font-sans);
     font-size: 16px;
     line-height: 1.6;
@@ -98,6 +117,12 @@
     body {
         @apply bg-background text-foreground;
     }
+
+    a {
+        color: inherit;
+        font-weight: 500;
+        text-decoration: inherit;
+    }
 }
 
 body {
@@ -109,12 +134,6 @@ body {
 
 #root {
     width: 100%;
-}
-
-a {
-    font-weight: 500;
-    color: #111111;
-    text-decoration: inherit;
 }
 
 /* Grid pattern background — used by project detail & about intro.

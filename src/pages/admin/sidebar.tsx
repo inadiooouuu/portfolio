@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
   Layers,
@@ -7,132 +8,126 @@ import {
   Briefcase,
   User,
   HardDrive,
-  LogOut
+  Search,
 } from "lucide-react";
-import {
-  Sidebar,
-  SidebarHeader,
-  SidebarContent,
-  SidebarGroup,
-  SidebarGroupLabel,
-  SidebarGroupContent,
-  SidebarMenu,
-  SidebarMenuItem,
-  SidebarMenuButton,
-  SidebarFooter,
-  useSidebar
-} from "@/shared/ui/sidebar";
-import { Button } from "@/shared/ui/button";
+import { Sidebar, useSidebar } from "@cloudflare/kumo";
+import { Input } from "@/shared/ui/input";
 import { Blobatar } from "@blobatar/react";
+import "blobatar/motion.css";
 
-interface UserProfile {
-  email: string;
-  name: string;
-  bio: string;
-  avatar_url: string | null;
-  role: string;
-}
+const mainNavItems = [
+  { path: "/admin/projects", label: "Projects", icon: FolderGit },
+  { path: "/admin/stacks", label: "Tech Stacks", icon: Layers },
+  { path: "/admin/articles", label: "Articles", icon: FileText },
+];
 
-interface AdminSidebarProps {
-  profile: UserProfile | null;
-  onLogout: () => void;
-}
+const secondaryNavItems = [
+  { path: "/admin/achievements", label: "Achievements", icon: Award },
+  { path: "/admin/work", label: "Work Experience", icon: Briefcase },
+  { path: "/admin/storage", label: "Storage", icon: HardDrive },
+  { path: "/admin/profile", label: "Profile Settings", icon: User },
+];
 
-export function AdminSidebar({ profile, onLogout }: AdminSidebarProps) {
+export function AdminSidebar() {
   const location = useLocation();
   const currentPath = location.pathname;
   const { state } = useSidebar();
+  const [query, setQuery] = useState("");
 
-  const mainNavItems = [
-    { path: "/admin/projects", label: "Projects", icon: FolderGit },
-    { path: "/admin/stacks", label: "Tech Stacks", icon: Layers },
-    { path: "/admin/articles", label: "Articles", icon: FileText },
-  ];
+  const isCollapsed = state === "collapsed";
 
-  const secondaryNavItems = [
-    { path: "/admin/achievements", label: "Achievements", icon: Award },
-    { path: "/admin/work", label: "Work Experience", icon: Briefcase },
-    { path: "/admin/storage", label: "Storage", icon: HardDrive },
-    { path: "/admin/profile", label: "Profile Settings", icon: User },
-  ];
-
-  const renderLink = (item: typeof mainNavItems[0]) => {
-    const Icon = item.icon;
-    const isActive = currentPath === item.path || (item.path === "/admin/projects" && currentPath === "/admin/dashboard");
-    return (
-      <SidebarMenuItem key={item.path}>
-        <SidebarMenuButton asChild isActive={isActive}>
-          <Link to={item.path}>
-            <Icon size={16} />
-            {state !== "collapsed" && <span>{item.label}</span>}
-          </Link>
-        </SidebarMenuButton>
-      </SidebarMenuItem>
-    );
+  const filterItems = (items: typeof mainNavItems) => {
+    const term = query.trim().toLowerCase();
+    if (!term) return items;
+    return items.filter((item) => item.label.toLowerCase().includes(term));
   };
+
+  const filteredMain = filterItems(mainNavItems);
+  const filteredSecondary = filterItems(secondaryNavItems);
+  const hasResults = filteredMain.length > 0 || filteredSecondary.length > 0;
+
+  const isActive = (path: string) =>
+    currentPath === path ||
+    (path === "/admin/projects" && currentPath === "/admin/dashboard");
 
   return (
     <Sidebar>
-      <SidebarHeader>
-        <div className="flex items-center gap-2.5">
-          <Blobatar
-            name="simone"
-            animate="always"
-            background="circle"
-            amplitude={20}
-            className="block w-12 h-12"
-          />
-        </div>
-      </SidebarHeader>
-
-      <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupLabel>Content</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {mainNavItems.map(renderLink)}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <SidebarGroup>
-          <SidebarGroupLabel>Credentials & Settings</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {secondaryNavItems.map(renderLink)}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-      </SidebarContent>
-
-      <SidebarFooter>
-        <div className="flex flex-col gap-3">
-          <div className="flex items-center gap-3 min-w-0">
-            <img
-              src={profile?.avatar_url || "/apple-touch-icon.png"}
-              alt="Avatar"
-              className="w-9 h-9 rounded-full object-cover bg-muted border border-sidebar-border shrink-0"
+      <Sidebar.Header>
+        <Link
+          to="/admin/projects"
+          className="flex min-w-0 items-center gap-2.5 no-underline"
+        >
+          <div className="flex items-center gap-2.5">
+            <Blobatar
+              name="simone"
+              animate="always"
+              background="circle"
+              amplitude={20}
+              className="block w-12 h-12"
             />
-            {state !== "collapsed" && (
-              <div className="flex flex-col min-w-0">
-                <span className="text-sm font-medium text-sidebar-foreground truncate leading-none mb-0.5">
-                  {profile?.name}
-                </span>
-                <span className="text-xs text-muted-foreground truncate">{profile?.email}</span>
-              </div>
-            )}
           </div>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={onLogout}
-            className="w-full justify-center gap-2"
-          >
-            <LogOut size={14} className="shrink-0" />
-            {state !== "collapsed" && <span>Log Out</span>}
-          </Button>
-        </div>
-      </SidebarFooter>
+        </Link>
+      </Sidebar.Header>
+
+      <Sidebar.Content>
+        {!isCollapsed && (
+          <div className="relative mb-2 px-0.5">
+            <Search
+              size={13}
+              className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-kumo-subtle"
+            />
+            <Input
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              placeholder="Search menu..."
+              aria-label="Search navigation"
+              className="h-7 pl-8 text-xs"
+            />
+          </div>
+        )}
+
+        {filteredMain.length > 0 && (
+          <Sidebar.Group>
+            <Sidebar.GroupLabel>Content</Sidebar.GroupLabel>
+            <Sidebar.Menu>
+              {filteredMain.map((item) => (
+                <Sidebar.MenuButton
+                  key={item.path}
+                  icon={item.icon}
+                  href={item.path}
+                  active={isActive(item.path)}
+                >
+                  {item.label}
+                </Sidebar.MenuButton>
+              ))}
+            </Sidebar.Menu>
+          </Sidebar.Group>
+        )}
+
+        {filteredSecondary.length > 0 && (
+          <Sidebar.Group>
+            <Sidebar.GroupLabel>Settings</Sidebar.GroupLabel>
+            <Sidebar.Menu>
+              {filteredSecondary.map((item) => (
+                <Sidebar.MenuButton
+                  key={item.path}
+                  icon={item.icon}
+                  href={item.path}
+                  active={isActive(item.path)}
+                >
+                  {item.label}
+                </Sidebar.MenuButton>
+              ))}
+            </Sidebar.Menu>
+          </Sidebar.Group>
+        )}
+
+        {query && !hasResults && !isCollapsed && (
+          <p className="px-2 py-4 text-center text-xs text-kumo-subtle">
+            No menu found.
+          </p>
+        )}
+      </Sidebar.Content>
     </Sidebar>
   );
 }

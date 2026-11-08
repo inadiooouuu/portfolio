@@ -1,17 +1,9 @@
 // ponytail: shared confirmation dialog replacing window.confirm across admin pages
-// The dialog stays open until the caller closes it (on success); pass `loading` to
-// show a spinner and block interactions while the async action is in flight.
-import { Loader2 } from "lucide-react";
-import {
-  AlertDialog,
-  AlertDialogContent,
-  AlertDialogHeader,
-  AlertDialogFooter,
-  AlertDialogTitle,
-  AlertDialogDescription,
-  AlertDialogAction,
-  AlertDialogCancel,
-} from "@/shared/ui/alert-dialog";
+// Built on Kumo's alert dialog so the overlay, panel and buttons match the
+// Cloudflare dashboard. The dialog stays open until the caller closes it (on
+// success); pass `loading` to show a spinner and block interactions.
+import { Dialog } from "@cloudflare/kumo";
+import { Button } from "@/shared/kumo/button";
 
 interface ConfirmDialogProps {
   open: boolean;
@@ -30,9 +22,6 @@ interface ConfirmDialogProps {
   };
 }
 
-const actionDisabled =
-  "disabled:pointer-events-none disabled:opacity-50";
-
 export function ConfirmDialog({
   open,
   onOpenChange,
@@ -45,39 +34,46 @@ export function ConfirmDialog({
   secondaryAction,
 }: ConfirmDialogProps) {
   return (
-    <AlertDialog open={open} onOpenChange={onOpenChange}>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>{title}</AlertDialogTitle>
-          <AlertDialogDescription>{description}</AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel disabled={loading}>{cancelLabel}</AlertDialogCancel>
+    <Dialog.Root role="alertdialog" open={open} onOpenChange={onOpenChange}>
+      <Dialog size="base" className="p-6">
+        <Dialog.Title className="text-lg font-semibold text-kumo-default">
+          {title}
+        </Dialog.Title>
+        <Dialog.Description className="mt-2 text-sm text-kumo-subtle">
+          {description}
+        </Dialog.Description>
+
+        <div className="mt-6 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+          <Dialog.Close
+            render={<Button variant="outline" disabled={loading} />}
+          >
+            {cancelLabel}
+          </Dialog.Close>
+
           {secondaryAction && (
-            <AlertDialogAction
+            <Button
+              variant="secondary"
               disabled={loading}
-              className={actionDisabled}
-              onClick={(e) => {
-                e.preventDefault();
+              onClick={() => {
                 if (!loading) secondaryAction.onAction();
               }}
             >
               {secondaryAction.label}
-            </AlertDialogAction>
+            </Button>
           )}
-          <AlertDialogAction
-            disabled={loading}
-            className={`bg-destructive text-white hover:bg-destructive/80 focus-visible:border-destructive/40 focus-visible:ring-destructive/20 ${actionDisabled}`}
-            onClick={(e) => {
-              e.preventDefault();
+
+          <Button
+            variant="default"
+            loading={loading}
+            className="!bg-red-600 !ring-red-700 hover:!bg-red-650"
+            onClick={() => {
               if (!loading) onConfirm();
             }}
           >
-            {loading && <Loader2 size={14} className="animate-spin" />}
             {confirmLabel}
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+          </Button>
+        </div>
+      </Dialog>
+    </Dialog.Root>
   );
 }

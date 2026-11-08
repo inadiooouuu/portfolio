@@ -6,7 +6,7 @@ import { z } from "zod";
 import { Loader2, Pencil, Trash2, X } from "lucide-react";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { Button } from "@/shared/ui/button";
+import { Button } from "@/shared/kumo/button";
 import { FormTextField } from "@/shared/ui/form";
 import { MarkdownEditor } from "@/shared/ui/markdown-editor";
 import {

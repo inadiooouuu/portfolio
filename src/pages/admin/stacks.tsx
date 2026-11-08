@@ -1,9 +1,9 @@
 // ponytail: stacks crud page separated from unified dashboard layout
 import { useState, useEffect } from "react";
 import { Plus, Edit2, Trash2 } from "lucide-react";
-import { Button } from "@/shared/ui/button";
+import { Button } from "@/shared/kumo/button";
 import { Card } from "@/shared/ui/card";
-import { Skeleton } from "@/shared/ui/skeleton";
+import { Skeleton } from "@/shared/kumo/skeleton";
 import { apiClient } from "@/shared/api/client";
 import { Effect } from "effect";
 import { useToast } from "@/shared/ui/toast";

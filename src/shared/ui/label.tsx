@@ -1,24 +1,17 @@
+import * as React from "react";
+import { Label as KumoLabel } from "@cloudflare/kumo";
 
-import * as React from "react"
-import * as LabelPrimitive from "@radix-ui/react-label"
-import { tv, type VariantProps } from "tailwind-variants"
-import { cn } from "@/shared/lib/utils"
+/** Admin label built on Kumo's `Label`. */
+export interface LabelProps {
+  children: React.ReactNode;
+  className?: string;
+  htmlFor?: string;
+}
 
-const labelVariants = tv({
-  base: "text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-50",
-})
-
-const Label = React.forwardRef<
-  React.ElementRef<typeof LabelPrimitive.Root>,
-  React.ComponentPropsWithoutRef<typeof LabelPrimitive.Root> &
-    VariantProps<typeof labelVariants>
->(({ className, ...props }, ref) => (
-  <LabelPrimitive.Root
-    ref={ref}
-    className={cn(labelVariants(), className)}
-    {...props}
-  />
-))
-Label.displayName = LabelPrimitive.Root.displayName
-
-export { Label }
+export function Label({ children, className, htmlFor }: LabelProps) {
+  return (
+    <KumoLabel className={className} htmlFor={htmlFor}>
+      {children}
+    </KumoLabel>
+  );
+}

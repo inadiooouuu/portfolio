@@ -3,10 +3,10 @@
 // via GET /api/v1/storage/raw/{id}.
 import { useState, useEffect, useCallback, useRef } from "react";
 import { Plus, Copy, ExternalLink, Eye, Loader2, FileIcon, UploadCloud, X, Trash2 } from "lucide-react";
-import { Button } from "@/shared/ui/button";
+import { Button } from "@/shared/kumo/button";
 import { Badge } from "@/shared/ui/badge";
 import { Card } from "@/shared/ui/card";
-import { Skeleton } from "@/shared/ui/skeleton";
+import { Skeleton } from "@/shared/kumo/skeleton";
 import {
   Table,
   TableHeader,
@@ -15,13 +15,7 @@ import {
   TableHead,
   TableCell,
 } from "@/components/ui/table";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/shared/ui/dialog";
+import { Dialog, LinkButton } from "@cloudflare/kumo";
 import {
   Sheet,
   SheetContent,
@@ -240,7 +234,7 @@ export function AdminStoragePage() {
               <TableHead className="w-28">Type</TableHead>
               <TableHead className="w-24">Size</TableHead>
               <TableHead className="w-32">Uploaded</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
+              <TableHead className="text-right" fixed="right">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -262,7 +256,7 @@ export function AdminStoragePage() {
                   <TableCell>
                     <Skeleton className="h-4 w-20" />
                   </TableCell>
-                  <TableCell className="text-right">
+                  <TableCell className="text-right" fixed="right">
                     <div className="flex justify-end gap-1">
                       <Skeleton className="h-8 w-8" />
                       <Skeleton className="h-8 w-8" />
@@ -311,7 +305,7 @@ export function AdminStoragePage() {
                   <TableCell className="text-muted-foreground text-xs whitespace-nowrap">
                     {new Date(file.createdAt).toLocaleDateString()}
                   </TableCell>
-                  <TableCell className="text-right whitespace-nowrap">
+                  <TableCell className="text-right whitespace-nowrap" fixed="right">
                     <div className="flex justify-end gap-1">
                       <Button
                         variant="ghost"
@@ -442,36 +436,50 @@ export function AdminStoragePage() {
         </SheetContent>
       </Sheet>
 
-      <Dialog open={!!previewFile} onOpenChange={(open) => !open && setPreviewFile(null)}>
-        <DialogContent className="max-w-3xl w-[calc(100%-2rem)] p-0 gap-0 overflow-hidden">
-          <DialogHeader className="px-6 pt-6 pb-4">
-            <DialogTitle className="truncate font-mono text-base">{previewFile?.id}</DialogTitle>
-            <DialogDescription>
-              {previewFile ? `${fileCategory(previewFile.type)} · ${previewFile.type} · ${formatSize(previewFile.size)}` : ""}
-            </DialogDescription>
-          </DialogHeader>
+      <Dialog.Root
+        open={!!previewFile}
+        onOpenChange={(open) => !open && setPreviewFile(null)}
+      >
+        <Dialog size="xl" className="p-0">
+          <div className="px-6 pt-6 pb-4">
+            <Dialog.Title className="truncate font-mono text-base">
+              {previewFile?.id}
+            </Dialog.Title>
+            <Dialog.Description className="text-sm text-kumo-subtle">
+              {previewFile
+                ? `${fileCategory(previewFile.type)} · ${previewFile.type} · ${formatSize(previewFile.size)}`
+                : ""}
+            </Dialog.Description>
+          </div>
           {previewFile && (
             <div className="px-6">
-              <FilePreview file={previewFile} className="w-full max-h-[60vh] rounded-lg" />
+              <FilePreview
+                file={previewFile}
+                className="max-h-[60vh] w-full rounded-lg"
+              />
             </div>
           )}
           <div className="flex justify-end gap-2 px-6 py-5">
-            <Button variant="outline" onClick={() => previewFile && handleCopy(previewFile.url)} className="gap-2">
+            <Button
+              variant="outline"
+              onClick={() => previewFile && handleCopy(previewFile.url)}
+              className="gap-2"
+            >
               <Copy size={14} /> Copy URL
             </Button>
             {previewFile && (
-              <a
+              <LinkButton
                 href={previewFile.url}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex h-9 shrink-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-md px-4 py-2 text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/80 transition-colors"
+                external
+                variant="primary"
+                size="base"
               >
                 <ExternalLink size={14} /> Open
-              </a>
+              </LinkButton>
             )}
           </div>
-        </DialogContent>
-      </Dialog>
+        </Dialog>
+      </Dialog.Root>
 
       <ConfirmDialog
         open={deleteId !== null}

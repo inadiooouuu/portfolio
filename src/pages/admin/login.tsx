@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Mail, Lock, User, FileText, ArrowRight, Loader2 } from "lucide-react";
-import { Button } from "@/shared/ui/button";
+import { Button } from "@/shared/kumo/button";
 import { Card } from "@/shared/ui/card";
 import { apiClient } from "@/shared/api/client";
 import { useAuthForm } from "@/features/auth/hooks/use-auth-form";

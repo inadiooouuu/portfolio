@@ -61,6 +61,7 @@ export function FormTextField<TFieldValues extends FieldValues>({
           type={type}
           placeholder={placeholder}
           disabled={disabled}
+          variant={error ? 'error' : 'default'}
           className={cn(prefixIcon && 'pl-10', inputClassName)}
           {...register(name, { onChange })}
         />

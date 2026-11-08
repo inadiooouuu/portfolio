@@ -54,7 +54,7 @@ export function FormSelectField<TFieldValues extends FieldValues>({
         id={name}
         disabled={disabled}
         className={cn(
-          "border-input bg-background shadow-xs text-foreground rounded-md text-sm px-3 py-1.5 cursor-pointer outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] w-full disabled:opacity-50",
+          "w-full cursor-pointer rounded-lg bg-kumo-base px-3 py-2 text-sm text-kumo-default ring-1 ring-kumo-line outline-none transition focus-visible:ring-2 focus-visible:ring-kumo-focus/50 disabled:opacity-50",
           selectClassName
         )}
         {...register(name, { onChange })}

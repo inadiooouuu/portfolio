@@ -2,7 +2,7 @@
 import { apiClient } from "@/shared/api/client";
 import { Effect } from "effect";
 import type { ProjectStory } from "../types";
-import { toast } from "sonner";
+import { toast } from "@/shared/ui/toast";
 import {
   useMutation,
   type UseMutationOptions,

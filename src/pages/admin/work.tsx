@@ -1,9 +1,9 @@
 // ponytail: work experiences crud page separated from unified dashboard layout
 import { useState, useEffect } from "react";
 import { Plus, Edit2, Trash2, BookOpen, Image as ImageIcon } from "lucide-react";
-import { Button } from "@/shared/ui/button";
+import { Button } from "@/shared/kumo/button";
 import { Card } from "@/shared/ui/card";
-import { Skeleton } from "@/shared/ui/skeleton";
+import { Skeleton } from "@/shared/kumo/skeleton";
 import {
   Table,
   TableHeader,
@@ -80,7 +80,7 @@ export function AdminWorkPage() {
           <TableHeader>
             <TableRow>
               <TableHead>Title</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
+              <TableHead className="text-right" fixed="right">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -90,7 +90,7 @@ export function AdminWorkPage() {
                   <TableCell>
                     <Skeleton className="h-4 w-48" />
                   </TableCell>
-                  <TableCell className="text-right">
+                  <TableCell className="text-right" fixed="right">
                     <Skeleton className="ml-auto h-8 w-20" />
                   </TableCell>
                 </TableRow>
@@ -112,7 +112,7 @@ export function AdminWorkPage() {
                       </span>
                     </div>
                   </TableCell>
-                  <TableCell className="text-right">
+                  <TableCell className="text-right" fixed="right">
                     <div className="flex justify-end gap-1">
                       <Button variant="outline" size="icon-sm" onClick={() => handleOpenDescriptions(exp)} aria-label="Manage job descriptions">
                         <BookOpen size={14} />

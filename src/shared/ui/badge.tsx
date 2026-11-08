@@ -1,32 +1,34 @@
-import * as React from "react"
-import { Slot } from "@radix-ui/react-slot"
-import { tv, type VariantProps } from "tailwind-variants"
-import { cn } from "@/shared/lib/utils"
+import * as React from "react";
+import { Badge as KumoBadge } from "@cloudflare/kumo";
+import { cn } from "@/shared/lib/utils";
 
-const badgeVariants = tv({
-  base: "inline-flex w-fit shrink-0 items-center justify-center gap-1 whitespace-nowrap rounded-md px-2 py-0.5 text-xs font-medium transition-colors [&>svg]:pointer-events-none [&>svg]:size-3",
-  variants: {
-    variant: {
-      default: "bg-primary text-primary-foreground border border-transparent",
-      secondary: "bg-secondary text-secondary-foreground border border-transparent hover:bg-accent hover:text-accent-foreground",
-      destructive: "bg-destructive/10 text-destructive border border-transparent hover:bg-destructive/20",
-      outline: "border border-border bg-background text-foreground",
-    },
-  },
-  defaultVariants: {
-    variant: "secondary",
-  },
-})
+/**
+ * Admin badge wrapper around Kumo's `Badge`.
+ * Legacy variant names are mapped onto Kumo's semantic badge variants.
+ */
+export type BadgeVariant = "default" | "secondary" | "destructive" | "outline";
 
-export interface BadgeProps
-  extends React.HTMLAttributes<HTMLSpanElement>,
-    VariantProps<typeof badgeVariants> {
-  asChild?: boolean
+export interface BadgeProps {
+  variant?: BadgeVariant;
+  className?: string;
+  children: React.ReactNode;
 }
 
-function Badge({ className, variant, asChild = false, ...props }: BadgeProps) {
-  const Comp = asChild ? Slot : "span"
-  return <Comp className={cn(badgeVariants({ variant }), className)} {...props} />
-}
+const variantMap = {
+  default: "primary",
+  secondary: "secondary",
+  destructive: "error",
+  outline: "outline",
+} as const;
 
-export { Badge, badgeVariants }
+export function Badge({
+  variant = "secondary",
+  className,
+  children,
+}: BadgeProps) {
+  return (
+    <KumoBadge variant={variantMap[variant]} className={cn(className)}>
+      {children}
+    </KumoBadge>
+  );
+}

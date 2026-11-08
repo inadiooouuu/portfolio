@@ -1,43 +1,17 @@
+import * as React from "react";
+import { Input as KumoInput } from "@cloudflare/kumo";
 
-import * as React from "react"
-import { cn } from "@/shared/lib/utils"
+/** Admin input built on Kumo's `Input`. */
+export type InputProps = Omit<
+  React.InputHTMLAttributes<HTMLInputElement>,
+  "size"
+> & {
+  variant?: "default" | "error";
+};
 
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {}
-
-const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ className, type, ...props }, ref) => {
-    if (type === "file") {
-      return (
-        <input
-          type={type}
-          className={cn(
-            "selection:bg-primary selection:text-primary-foreground border-input ring-offset-background placeholder:text-muted-foreground shadow-xs flex h-9 w-full min-w-0 rounded-md border bg-transparent px-3 pt-1.5 text-sm font-medium outline-none transition-[color,box-shadow] disabled:cursor-not-allowed disabled:opacity-50",
-			      "focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]",
-			      "aria-invalid:ring-destructive/20 aria-invalid:border-destructive",
-            className
-          )}
-          ref={ref}
-          {...props}
-        />
-      )
-    }
-
-    return (
-      <input
-        type={type}
-        className={cn(
-          "border-input bg-background selection:bg-primary selection:text-primary-foreground ring-offset-background placeholder:text-muted-foreground shadow-xs flex h-9 w-full min-w-0 rounded-md border px-3 py-1 text-base outline-none transition-[color,box-shadow] disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
-			    "focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]",
-			    "aria-invalid:ring-destructive/20 aria-invalid:border-destructive",
-          className
-        )}
-        ref={ref}
-        {...props}
-      />
-    )
-  }
-)
-Input.displayName = "Input"
-
-export { Input }
+export const Input = React.forwardRef<HTMLInputElement, InputProps>(
+  ({ variant = "default", ...props }, ref) => (
+    <KumoInput ref={ref} variant={variant} {...props} />
+  )
+);
+Input.displayName = "Input";

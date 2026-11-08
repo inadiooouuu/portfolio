@@ -1,7 +1,7 @@
 // ponytail: projects crud page separated from unified dashboard layout
 import { useState, useEffect } from "react";
 import { Plus, Edit2, Trash2 } from "lucide-react";
-import { Button } from "@/shared/ui/button";
+import { Button } from "@/shared/kumo/button";
 import { Card } from "@/shared/ui/card";
 import { Badge } from "@/shared/ui/badge";
 import { apiClient } from "@/shared/api/client";
@@ -22,7 +22,7 @@ import {
   TableHead,
   TableCell,
 } from "@/components/ui/table";
-import { Skeleton } from "@/shared/ui/skeleton";
+import { Skeleton } from "@/shared/kumo/skeleton";
 import type { Project } from "@/features/project/types";
 import type { TechStack } from "@/features/tech-stack/types";
 
@@ -130,7 +130,7 @@ export function AdminProjectsPage() {
               <TableHead>Project Title</TableHead>
               <TableHead>Description</TableHead>
               <TableHead>Relations</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
+              <TableHead className="text-right" fixed="right">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -152,7 +152,7 @@ export function AdminProjectsPage() {
                       <Skeleton className="h-4 w-10" />
                     </div>
                   </TableCell>
-                  <TableCell className="text-right">
+                  <TableCell className="text-right" fixed="right">
                     <div className="flex justify-end gap-2">
                       <Skeleton className="h-8 w-16" />
                       <Skeleton className="h-8 w-12" />
@@ -186,33 +186,45 @@ export function AdminProjectsPage() {
                   <TableCell className="text-muted-foreground text-xs max-w-xs truncate">{proj.description}</TableCell>
                   <TableCell className="text-muted-foreground text-xs space-y-1">
                     <div className="flex flex-wrap gap-1">
-                      <Badge
-                        variant="secondary"
-                        asChild
-                        className="cursor-pointer"
-                      >
-                        <button onClick={() => handleOpenStories(proj)}>
+                      <Badge variant="secondary">
+                        <button
+                          type="button"
+                          onClick={() => handleOpenStories(proj)}
+                          className="cursor-pointer"
+                        >
                           {proj.stories?.length || 0} Stories
                         </button>
                       </Badge>
-                      <Badge variant="secondary" asChild className="cursor-pointer">
-                        <button onClick={() => handleOpenTechStacks(proj)}>
+                      <Badge variant="secondary">
+                        <button
+                          type="button"
+                          onClick={() => handleOpenTechStacks(proj)}
+                          className="cursor-pointer"
+                        >
                           {proj.tech_stacks?.length || 0} Stacks
                         </button>
                       </Badge>
-                      <Badge variant="secondary" asChild className="cursor-pointer">
-                        <button onClick={() => handleOpenGallery(proj)}>
+                      <Badge variant="secondary">
+                        <button
+                          type="button"
+                          onClick={() => handleOpenGallery(proj)}
+                          className="cursor-pointer"
+                        >
                           {proj.images?.length || 0} Gallery
                         </button>
                       </Badge>
-                      <Badge variant="secondary" asChild className="cursor-pointer">
-                        <button onClick={() => handleOpenResources(proj)}>
+                      <Badge variant="secondary">
+                        <button
+                          type="button"
+                          onClick={() => handleOpenResources(proj)}
+                          className="cursor-pointer"
+                        >
                           {proj.resources?.length || 0} Links
                         </button>
                       </Badge>
                     </div>
                   </TableCell>
-                  <TableCell className="text-right whitespace-nowrap">
+                  <TableCell className="text-right whitespace-nowrap" fixed="right">
                     <div className="flex justify-end gap-1">
                       <Button
                         variant="default"

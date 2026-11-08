@@ -1,31 +1,34 @@
-
-
 import * as React from "react"
 import { tv, type VariantProps } from "tailwind-variants"
 import { cn } from "@/shared/lib/utils"
 
-// ponytail: glossy embossed surface ported from dwifi_admin_lite_fe button
-const embossShadow =
-  "shadow-[0_6px_10px_rgba(255,255,255,0.5)_inset,-10px_40px_41px_-4px_rgba(0,0,0,0.01)]"
-const emboss = `border-white/35 ${embossShadow}`
-
+// Cloudflare Kumo-inspired buttons. The `default` variant mirrors the
+// dashboard's emphasis button: compact height, subtle ring, and a glossy
+// orange gradient with an inset highlight.
 const buttonVariants = tv({
-  base: "focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 aria-invalid:border-destructive inline-flex shrink-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-md text-sm font-medium outline-none transition-all focus-visible:ring-[3px] disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 [&_svg:not([class*='size-'])]:size-4 [&_svg]:pointer-events-none [&_svg]:shrink-0 cursor-pointer border border-transparent select-none active:not-aria-[haspopup]:translate-y-px",
+  base: "group relative inline-flex shrink-0 cursor-pointer select-none items-center justify-center gap-1 overflow-hidden whitespace-nowrap rounded-md border-0 font-medium outline-none transition-[color,background-color,box-shadow,opacity] focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 [&_svg:not([class*='size-'])]:size-3.5 [&_svg]:pointer-events-none [&_svg]:shrink-0",
   variants: {
     variant: {
-      default: `bg-primary text-primary-foreground hover:bg-primary/80 ${emboss}`,
-      destructive: `bg-destructive text-white hover:bg-destructive/80 focus-visible:border-destructive/40 focus-visible:ring-destructive/20 ${emboss}`,
-      outline: `border-border bg-background hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground ${embossShadow}`,
-      secondary: `bg-secondary text-secondary-foreground hover:bg-[color-mix(in_oklch,var(--secondary),var(--foreground)_5%)] ${emboss}`,
-      ghost: "hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground",
-      link: "text-primary underline-offset-4 hover:underline",
+      default:
+        "bg-(--kumo-button-emphasis-bg) bg-linear-to-b from-(--kumo-button-emphasis-gradient-start) to-(--kumo-button-emphasis-gradient-end) text-white shadow-[inset_0_1px_0_0_var(--kumo-button-emphasis-bg)] ring-1 ring-(--kumo-button-emphasis-ring) hover:from-(--kumo-button-emphasis-bg) focus-visible:ring-(--kumo-button-emphasis-ring) active:ring-(--kumo-button-emphasis-ring)",
+      emphasis:
+        "bg-(--kumo-button-emphasis-bg) bg-linear-to-b from-(--kumo-button-emphasis-gradient-start) to-(--kumo-button-emphasis-gradient-end) text-white shadow-[inset_0_1px_0_0_var(--kumo-button-emphasis-bg)] ring-1 ring-(--kumo-button-emphasis-ring) hover:from-(--kumo-button-emphasis-bg) focus-visible:ring-(--kumo-button-emphasis-ring) active:ring-(--kumo-button-emphasis-ring)",
+      destructive:
+        "bg-(--kumo-button-danger-bg) bg-linear-to-b from-(--kumo-button-danger-gradient-start) to-(--kumo-button-danger-gradient-end) text-white shadow-[inset_0_1px_0_0_var(--kumo-button-danger-bg)] ring-1 ring-(--kumo-button-danger-ring) hover:from-(--kumo-button-danger-bg) focus-visible:ring-(--kumo-button-danger-ring) active:ring-(--kumo-button-danger-ring)",
+      outline:
+        "border border-border bg-background text-foreground shadow-xs hover:bg-muted focus-visible:ring-ring/50",
+      secondary:
+        "border border-border bg-secondary text-secondary-foreground shadow-xs hover:bg-[color-mix(in_oklch,var(--secondary),var(--foreground)_5%)] focus-visible:ring-ring/50",
+      ghost:
+        "text-foreground hover:bg-muted focus-visible:ring-ring/50",
+      link: "text-primary underline-offset-4 hover:underline focus-visible:ring-ring/50",
     },
     size: {
-      default: "h-9 px-4 py-2 has-[>svg]:px-3",
-      sm: "h-8 gap-1 rounded-md px-2.5 has-[>svg]:px-2",
-      lg: "h-10 gap-1.5 px-6 has-[>svg]:px-4",
-      icon: "size-9",
-      "icon-sm": "size-8 rounded-md",
+      default: "h-6.5 px-2 pb-px text-xs",
+      sm: "h-6 gap-1 px-2 text-[11px]",
+      lg: "h-9 gap-1.5 px-4 text-sm",
+      icon: "size-7",
+      "icon-sm": "size-6.5",
     },
   },
   defaultVariants: {

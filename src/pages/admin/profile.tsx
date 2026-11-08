@@ -1,6 +1,7 @@
 import { useOutletContext } from "react-router-dom";
 import { Upload, Loader2, CheckCircle } from "lucide-react";
-import { Button } from "@/shared/ui/button";
+import { buttonVariants } from "@cloudflare/kumo";
+import { Button } from "@/shared/kumo/button";
 import { Card, CardContent } from "@/shared/ui/card";
 import { useProfileForm } from "@/features/profile/hooks/use-profile-form";
 import { FormTextField, FormTextAreaField } from "@/shared/ui/form";
@@ -68,22 +69,19 @@ export function AdminProfilePage() {
                 <span className="text-sm font-medium text-foreground">
                   Profile photo
                 </span>
-                <label className="inline-flex">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    asChild
-                    className="cursor-pointer gap-2"
+                <label className="inline-flex cursor-pointer">
+                  <input
+                    type="file"
+                    onChange={handleAvatarUpload}
+                    accept="image/*"
+                    className="hidden"
+                  />
+                  <span
+                    className={buttonVariants({ variant: "outline", size: "sm" })}
                   >
                     <Upload size={14} />
                     Choose File
-                    <input
-                      type="file"
-                      onChange={handleAvatarUpload}
-                      accept="image/*"
-                      className="hidden"
-                    />
-                  </Button>
+                  </span>
                 </label>
               </div>
             </div>
