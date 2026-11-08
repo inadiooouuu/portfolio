@@ -94,7 +94,7 @@ const SheetFooter = ({
 }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
     className={cn(
-      "flex shrink-0 flex-col-reverse gap-2 border-t border-kumo-line bg-kumo-base px-6 py-4 sm:flex-row sm:justify-end",
+      "flex shrink-0 flex-col gap-2 border-t border-kumo-line bg-kumo-base px-6 py-4 [&>button]:w-full",
       className
     )}
     {...props}

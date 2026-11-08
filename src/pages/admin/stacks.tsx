@@ -1,9 +1,10 @@
 // ponytail: stacks crud page separated from unified dashboard layout
 import { useState, useEffect } from "react";
+import { BasePageLayout } from "@/shared/ui/base-page-layout";
 import { Plus, Edit2, Trash2 } from "lucide-react";
-import { Button } from "@/shared/kumo/button";
+import { Button } from "@/shared/ui/button";
 import { Card } from "@/shared/ui/card";
-import { Skeleton } from "@/shared/kumo/skeleton";
+import { Skeleton } from "@/shared/ui/skeleton";
 import { apiClient } from "@/shared/api/client";
 import { Effect } from "effect";
 import { useToast } from "@/shared/ui/toast";
@@ -46,17 +47,15 @@ export function AdminStacksPage() {
   };
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex flex-col gap-1.5 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-xl font-bold tracking-tight text-foreground">Tech Stacks</h1>
-          <p className="text-xs text-muted-foreground mt-0.5">Manage the technical competencies and skills displayed on the showcase.</p>
-        </div>
+    <BasePageLayout
+      title="Tech Stacks"
+      subtitle="Manage the technical competencies and skills displayed on the showcase."
+      headerAction={
         <Button onClick={handleOpenCreate} className="gap-2 shadow-xs cursor-pointer">
           <Plus size={16} /> Add Stack
         </Button>
-      </div>
-
+      }
+    >
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
         {loading ? (
           Array.from({ length: 6 }).map((_, i) => (
@@ -122,6 +121,6 @@ export function AdminStacksPage() {
         loading={deleting}
         onConfirm={handleDelete}
       />
-    </div>
+    </BasePageLayout>
   );
 }

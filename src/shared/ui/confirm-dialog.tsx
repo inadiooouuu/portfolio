@@ -3,7 +3,7 @@
 // Cloudflare dashboard. The dialog stays open until the caller closes it (on
 // success); pass `loading` to show a spinner and block interactions.
 import { Dialog } from "@cloudflare/kumo";
-import { Button } from "@/shared/kumo/button";
+import { Button } from "@/shared/ui/button";
 
 interface ConfirmDialogProps {
   open: boolean;

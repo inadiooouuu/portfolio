@@ -52,7 +52,7 @@ export function FormPasswordField<TFieldValues extends FieldValues>({
       tooltip={tooltip}
       className={className}
     >
-      <div className="relative">
+      <div className="relative w-full">
         {prefixIcon && (
           <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
             {prefixIcon}

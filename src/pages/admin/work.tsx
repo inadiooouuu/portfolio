@@ -1,9 +1,10 @@
 // ponytail: work experiences crud page separated from unified dashboard layout
 import { useState, useEffect } from "react";
-import { Plus, Edit2, Trash2, BookOpen, Image as ImageIcon } from "lucide-react";
-import { Button } from "@/shared/kumo/button";
-import { Card } from "@/shared/ui/card";
-import { Skeleton } from "@/shared/kumo/skeleton";
+import { BasePageLayout } from "@/shared/ui/base-page-layout";
+import { Plus, Pencil, Trash2, BookOpen, Image as ImageIcon } from "lucide-react";
+import { Button } from "@/shared/ui/button";
+import { RowActions } from "@/shared/ui/row-actions";
+import { Skeleton } from "@/shared/ui/skeleton";
 import {
   Table,
   TableHeader,
@@ -11,7 +12,7 @@ import {
   TableRow,
   TableHead,
   TableCell,
-} from "@/components/ui/table";
+} from "@/shared/ui/table";
 import { apiClient } from "@/shared/api/client";
 import { Effect } from "effect";
 import { useToast } from "@/shared/ui/toast";
@@ -64,105 +65,91 @@ export function AdminWorkPage() {
   };
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex flex-col gap-1.5 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h2 className="text-lg font-semibold tracking-tight">Work Experiences</h2>
-          <p className="text-sm text-muted-foreground">Manage work experience records</p>
-        </div>
+    <BasePageLayout
+      title="Work Experiences"
+      subtitle="Manage work experience records"
+      headerAction={
         <Button onClick={handleOpenCreate} className="gap-2 self-start">
           <Plus size={16} /> Add Experience
         </Button>
-      </div>
-
-      <Card className="overflow-hidden py-0">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Title</TableHead>
-              <TableHead className="text-right" fixed="right">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {loading ? (
-              Array.from({ length: 4 }).map((_, idx) => (
-                <TableRow key={idx}>
-                  <TableCell>
-                    <Skeleton className="h-4 w-48" />
-                  </TableCell>
-                  <TableCell className="text-right" fixed="right">
-                    <Skeleton className="ml-auto h-8 w-20" />
-                  </TableCell>
-                </TableRow>
-              ))
-            ) : experiences.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={2} className="p-8 text-center text-muted-foreground">
-                  No work experiences configured.
+      }
+    >
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Title</TableHead>
+            <TableHead className="text-right" fixed="right">Actions</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {loading ? (
+            Array.from({ length: 4 }).map((_, idx) => (
+              <TableRow key={idx}>
+                <TableCell>
+                  <Skeleton className="h-4 w-48" />
+                </TableCell>
+                <TableCell className="text-right" fixed="right">
+                  <Skeleton className="ml-auto size-8 rounded-md" />
                 </TableCell>
               </TableRow>
-            ) : (
-              experiences.map((exp) => (
-                <TableRow key={exp.id}>
-                  <TableCell className="font-medium text-foreground">
-                    <div className="flex flex-col">
-                      <span>{exp.title}</span>
-                      <span className="text-xs font-normal text-muted-foreground">
-                        {exp.images?.length ?? 0} images
-                      </span>
-                    </div>
-                  </TableCell>
-                  <TableCell className="text-right" fixed="right">
-                    <div className="flex justify-end gap-1">
-                      <Button variant="outline" size="icon-sm" onClick={() => handleOpenDescriptions(exp)} aria-label="Manage job descriptions">
-                        <BookOpen size={14} />
-                      </Button>
-                      <Button variant="outline" size="icon-sm" onClick={() => handleOpenImages(exp)} aria-label="Manage experience images">
-                        <ImageIcon size={14} />
-                      </Button>
-                      <Button variant="default" size="icon-sm" onClick={() => handleOpenEdit(exp)} aria-label="Edit experience">
-                        <Edit2 size={14} />
-                      </Button>
-                      <Button
-                        variant="destructive"
-                        size="icon-sm"
-                        onClick={() => setDeleteId(exp.id)}
-                        aria-label="Delete experience"
-                      >
-                        <Trash2 size={14} />
-                      </Button>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
-      </Card>
+            ))
+          ) : experiences.length === 0 ? (
+            <TableRow>
+              <TableCell colSpan={2} className="p-8 text-center text-muted-foreground">
+                No work experiences configured.
+              </TableCell>
+            </TableRow>
+          ) : (
+            experiences.map((exp) => (
+              <TableRow key={exp.id}>
+                <TableCell className="font-medium text-foreground">
+                  <div className="flex flex-col">
+                    <span>{exp.title}</span>
+                    <span className="text-xs font-normal text-muted-foreground">
+                      {exp.images?.length ?? 0} images
+                    </span>
+                  </div>
+                </TableCell>
+                <TableCell className="text-right" fixed="right">
+                  <div className="flex justify-end">
+                    <RowActions
+                      actions={[
+                        { key: "descriptions", label: "Manage descriptions", icon: <BookOpen size={14} />, onSelect: () => handleOpenDescriptions(exp) },
+                        { key: "images", label: "Manage images", icon: <ImageIcon size={14} />, onSelect: () => handleOpenImages(exp) },
+                        { key: "edit", label: "Edit experience", icon: <Pencil size={14} />, onSelect: () => handleOpenEdit(exp) },
+                        { key: "delete", label: "Delete experience", icon: <Trash2 size={14} />, variant: "danger", onSelect: () => setDeleteId(exp.id) },
+                      ]}
+                    />
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))
+          )}
+        </TableBody>
+      </Table>
 
-      {formOpen && (
-        <WorkExperienceDrawer open={formOpen} onOpenChange={setFormOpen} editingExperience={editingExp} onSuccess={fetchExperiences} />
-      )}
+      <WorkExperienceDrawer
+        open={formOpen}
+        onOpenChange={setFormOpen}
+        editingExperience={editingExp}
+        onSuccess={fetchExperiences}
+      />
 
-      {descOpen && (
-        <WorkExperienceDescriptionsDrawer
-          open={descOpen}
-          onOpenChange={setDescOpen}
-          experience={editingExp}
-          setExperience={setEditingExp}
-          onSuccess={fetchExperiences}
-        />
-      )}
+      <WorkExperienceDescriptionsDrawer
+        open={descOpen}
+        onOpenChange={setDescOpen}
+        experience={editingExp}
+        setExperience={setEditingExp}
+        onSuccess={fetchExperiences}
+      />
 
-      {imagesOpen && (
-        <WorkExperienceImagesDrawer
-          open={imagesOpen}
-          onOpenChange={setImagesOpen}
-          experience={editingExp}
-          setExperience={setEditingExp}
-          onSuccess={fetchExperiences}
-        />
-      )}
+      <WorkExperienceImagesDrawer
+        open={imagesOpen}
+        onOpenChange={setImagesOpen}
+        experience={editingExp}
+        setExperience={setEditingExp}
+        onSuccess={fetchExperiences}
+      />
 
       <ConfirmDialog
         open={deleteId !== null}
@@ -173,6 +160,6 @@ export function AdminWorkPage() {
         loading={deleting}
         onConfirm={handleDelete}
       />
-    </div>
+    </BasePageLayout>
   );
 }

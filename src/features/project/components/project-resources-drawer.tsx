@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Loader2, Trash2, ExternalLink } from "lucide-react";
-import { Button } from "@/shared/kumo/button";
+import { Button } from "@/shared/ui/button";
 import { FormTextField, FormSelectField } from "@/shared/ui/form";
 import {
   Sheet,

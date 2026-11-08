@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
+import { BasePageLayout } from "@/shared/ui/base-page-layout";
 import { Plus, Edit2, Trash2 } from "lucide-react";
-import { Button } from "@/shared/kumo/button";
+import { Button } from "@/shared/ui/button";
 import { Card, CardContent } from "@/shared/ui/card";
-import { Skeleton } from "@/shared/kumo/skeleton";
+import { Skeleton } from "@/shared/ui/skeleton";
 import { apiClient } from "@/shared/api/client";
 import { Effect } from "effect";
 import { useToast } from "@/shared/ui/toast";
@@ -41,16 +42,15 @@ export function AdminArticlesPage() {
   };
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex flex-col gap-1.5 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h2 className="text-lg font-semibold tracking-tight">Articles</h2>
-          <p className="text-sm text-muted-foreground">Manage article records</p>
-        </div>
+    <BasePageLayout
+      title="Articles"
+      subtitle="Manage article records"
+      headerAction={
         <Button onClick={handleOpenCreate} className="gap-2 self-start">
           <Plus size={16} /> Add Article
         </Button>
-      </div>
+      }
+    >
       {loading ? (
         <div className="grid gap-4">
           {Array.from({ length: 4 }).map((_, idx) => (
@@ -90,7 +90,12 @@ export function AdminArticlesPage() {
           ))}
         </div>
       )}
-      {formOpen && <ArticleDrawer open={formOpen} onOpenChange={setFormOpen} editingArticle={editingArticle} onSuccess={fetchArticles} />}
+      <ArticleDrawer
+        open={formOpen}
+        onOpenChange={setFormOpen}
+        editingArticle={editingArticle}
+        onSuccess={fetchArticles}
+      />
 
       <ConfirmDialog
         open={deleteId !== null}
@@ -101,6 +106,6 @@ export function AdminArticlesPage() {
         loading={deleting}
         onConfirm={handleDelete}
       />
-    </div>
+    </BasePageLayout>
   );
 }

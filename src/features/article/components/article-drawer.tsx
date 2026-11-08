@@ -1,7 +1,7 @@
 // ponytail: separate article edit/create sheet component
 
 import { Loader2 } from "lucide-react";
-import { Button } from "@/shared/kumo/button";
+import { Button } from "@/shared/ui/button";
 import {
   Sheet,
   SheetContent,
@@ -96,7 +96,7 @@ export function ArticleDrawer({
             />
           </div>
 
-          <SheetFooter>
+          <SheetFooter className="flex flex-col!">
             <Button
               type="button"
               variant="outline"

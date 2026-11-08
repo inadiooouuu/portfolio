@@ -1,5 +1,6 @@
 import * as React from "react";
 import { Textarea as KumoTextarea } from "@cloudflare/kumo";
+import { cn } from "@/shared/lib/utils";
 
 /** Admin textarea built on Kumo's `Textarea`. */
 export type TextareaProps = Omit<
@@ -10,8 +11,8 @@ export type TextareaProps = Omit<
 };
 
 export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
-  ({ variant = "default", ...props }, ref) => (
-    <KumoTextarea ref={ref} variant={variant} {...props} />
+  ({ variant = "default", className, ...props }, ref) => (
+    <KumoTextarea ref={ref} variant={variant} className={cn("w-full", className)} {...props} />
   )
 );
 Textarea.displayName = "Textarea";

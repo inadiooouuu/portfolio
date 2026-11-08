@@ -1,9 +1,9 @@
 // ponytail: projects crud page separated from unified dashboard layout
 import { useState, useEffect } from "react";
-import { Plus, Edit2, Trash2 } from "lucide-react";
-import { Button } from "@/shared/kumo/button";
-import { Card } from "@/shared/ui/card";
+import { Plus, BookOpen, Images, Layers, Link2, Pencil, Trash2 } from "lucide-react";
+import { Button } from "@/shared/ui/button";
 import { Badge } from "@/shared/ui/badge";
+import { RowActions } from "@/shared/ui/row-actions";
 import { apiClient } from "@/shared/api/client";
 import { Effect } from "effect";
 import { useToast } from "@/shared/ui/toast";
@@ -14,6 +14,7 @@ import { ProjectTechStacksDrawer } from "@/features/project/components/project-t
 import { ProjectGalleryDrawer } from "@/features/project/components/project-gallery-drawer";
 import { ProjectResourcesDrawer } from "@/features/project/components/project-resources-drawer";
 
+import { BasePageLayout } from "@/shared/ui/base-page-layout";
 import {
   Table,
   TableHeader,
@@ -21,8 +22,8 @@ import {
   TableRow,
   TableHead,
   TableCell,
-} from "@/components/ui/table";
-import { Skeleton } from "@/shared/kumo/skeleton";
+} from "@/shared/ui/table";
+import { Skeleton } from "@/shared/ui/skeleton";
 import type { Project } from "@/features/project/types";
 import type { TechStack } from "@/features/tech-stack/types";
 
@@ -111,145 +112,100 @@ export function AdminProjectsPage() {
   };
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex flex-col gap-1.5 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h2 className="text-lg font-semibold tracking-tight">Projects</h2>
-          <p className="text-sm text-muted-foreground">Manage project records, case stories, tech stack join links, and demo assets</p>
-        </div>
+    <BasePageLayout
+      title="Projects"
+      subtitle="Manage project records, case stories, tech stack join links, and demo assets"
+      headerAction={
         <Button onClick={handleOpenCreate} className="gap-2 self-start">
           <Plus size={16} /> Add Project
         </Button>
-      </div>
-
-      <Card className="overflow-hidden py-0">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="w-32">Thumbnail</TableHead>
-              <TableHead>Project Title</TableHead>
-              <TableHead>Description</TableHead>
-              <TableHead>Relations</TableHead>
-              <TableHead className="text-right" fixed="right">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {loading ? (
-              Array.from({ length: 5 }).map((_, idx) => (
-                <TableRow key={idx}>
-                  <TableCell>
-                    <Skeleton className="h-12 w-20" />
-                  </TableCell>
-                  <TableCell>
-                    <Skeleton className="h-4 w-32" />
-                  </TableCell>
-                  <TableCell>
-                    <Skeleton className="h-4 w-48" />
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex gap-1">
-                      <Skeleton className="h-4 w-10" />
-                      <Skeleton className="h-4 w-10" />
-                    </div>
-                  </TableCell>
-                  <TableCell className="text-right" fixed="right">
-                    <div className="flex justify-end gap-2">
-                      <Skeleton className="h-8 w-16" />
-                      <Skeleton className="h-8 w-12" />
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))
-            ) : projects.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={5} className="p-8 text-center text-muted-foreground">
-                  No projects configured. Click 'Add Project' to get started.
+      }
+    >
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead className="w-32">Thumbnail</TableHead>
+            <TableHead>Project Title</TableHead>
+            <TableHead>Description</TableHead>
+            <TableHead>Relations</TableHead>
+            <TableHead className="text-right" fixed="right">Actions</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {loading ? (
+            Array.from({ length: 5 }).map((_, idx) => (
+              <TableRow key={idx}>
+                <TableCell>
+                  <Skeleton className="h-12 w-20" />
+                </TableCell>
+                <TableCell>
+                  <Skeleton className="h-4 w-32" />
+                </TableCell>
+                <TableCell>
+                  <Skeleton className="h-4 w-48" />
+                </TableCell>
+                <TableCell>
+                  <div className="flex gap-1">
+                    <Skeleton className="h-4 w-10" />
+                    <Skeleton className="h-4 w-10" />
+                  </div>
+                </TableCell>
+                <TableCell className="text-right" fixed="right">
+                  <Skeleton className="ml-auto size-8 rounded-md" />
                 </TableCell>
               </TableRow>
-            ) : (
-              projects.map((proj, idx) => (
-                <TableRow
-                  key={proj.id}
-                  className="animate-content-enter"
-                  style={{ animationDelay: `${idx * 60}ms` }}
-                >
-                  <TableCell>
-                    <div className="shine-enter w-20 h-12 rounded-md">
-                      <img
-                        src={proj.thumbnail_url}
-                        alt={proj.title}
-                        className="w-full h-full rounded-md object-cover border border-border bg-muted"
-                      />
-                    </div>
-                  </TableCell>
-                  <TableCell className="font-medium text-foreground">{proj.title}</TableCell>
-                  <TableCell className="text-muted-foreground text-xs max-w-xs truncate">{proj.description}</TableCell>
-                  <TableCell className="text-muted-foreground text-xs space-y-1">
-                    <div className="flex flex-wrap gap-1">
-                      <Badge variant="secondary">
-                        <button
-                          type="button"
-                          onClick={() => handleOpenStories(proj)}
-                          className="cursor-pointer"
-                        >
-                          {proj.stories?.length || 0} Stories
-                        </button>
-                      </Badge>
-                      <Badge variant="secondary">
-                        <button
-                          type="button"
-                          onClick={() => handleOpenTechStacks(proj)}
-                          className="cursor-pointer"
-                        >
-                          {proj.tech_stacks?.length || 0} Stacks
-                        </button>
-                      </Badge>
-                      <Badge variant="secondary">
-                        <button
-                          type="button"
-                          onClick={() => handleOpenGallery(proj)}
-                          className="cursor-pointer"
-                        >
-                          {proj.images?.length || 0} Gallery
-                        </button>
-                      </Badge>
-                      <Badge variant="secondary">
-                        <button
-                          type="button"
-                          onClick={() => handleOpenResources(proj)}
-                          className="cursor-pointer"
-                        >
-                          {proj.resources?.length || 0} Links
-                        </button>
-                      </Badge>
-                    </div>
-                  </TableCell>
-                  <TableCell className="text-right whitespace-nowrap" fixed="right">
-                    <div className="flex justify-end gap-1">
-                      <Button
-                        variant="default"
-                        size="icon-sm"
-                        onClick={() => handleOpenEdit(proj)}
-                        aria-label="Edit project"
-                      >
-                        <Edit2 size={14} />
-                      </Button>
-                      <Button
-                        variant="destructive"
-                        size="icon-sm"
-                        onClick={() => setDeleteProject(proj)}
-                        aria-label="Delete project"
-                      >
-                        <Trash2 size={14} />
-                      </Button>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
-      </Card>
+            ))
+          ) : projects.length === 0 ? (
+            <TableRow>
+              <TableCell colSpan={5} className="p-8 text-center text-muted-foreground">
+                No projects configured. Click 'Add Project' to get started.
+              </TableCell>
+            </TableRow>
+          ) : (
+            projects.map((proj, idx) => (
+              <TableRow
+                key={proj.id}
+                className="animate-content-enter"
+                style={{ animationDelay: `${idx * 60}ms` }}
+              >
+                <TableCell>
+                  <div className="shine-enter w-20 h-12 rounded-md">
+                    <img
+                      src={proj.thumbnail_url}
+                      alt={proj.title}
+                      className="w-full h-full rounded-md object-cover border border-border bg-muted"
+                    />
+                  </div>
+                </TableCell>
+                <TableCell className="font-medium text-foreground">{proj.title}</TableCell>
+                <TableCell className="text-muted-foreground text-xs max-w-xs truncate">{proj.description}</TableCell>
+                <TableCell className="text-muted-foreground text-xs space-y-1">
+                  <div className="flex flex-wrap gap-1">
+                    <Badge variant="secondary">{proj.stories?.length || 0} Stories</Badge>
+                    <Badge variant="secondary">{proj.tech_stacks?.length || 0} Stacks</Badge>
+                    <Badge variant="secondary">{proj.images?.length || 0} Gallery</Badge>
+                    <Badge variant="secondary">{proj.resources?.length || 0} Links</Badge>
+                  </div>
+                </TableCell>
+                <TableCell className="text-right whitespace-nowrap" fixed="right">
+                  <div className="flex justify-end">
+                    <RowActions
+                      actions={[
+                        { key: "stories", label: "Manage stories", icon: <BookOpen size={14} />, onSelect: () => handleOpenStories(proj) },
+                        { key: "stacks", label: "Manage tech stacks", icon: <Layers size={14} />, onSelect: () => handleOpenTechStacks(proj) },
+                        { key: "gallery", label: "Manage gallery", icon: <Images size={14} />, onSelect: () => handleOpenGallery(proj) },
+                        { key: "resources", label: "Manage links", icon: <Link2 size={14} />, onSelect: () => handleOpenResources(proj) },
+                        { key: "edit", label: "Edit project", icon: <Pencil size={14} />, onSelect: () => handleOpenEdit(proj) },
+                        { key: "delete", label: "Delete project", icon: <Trash2 size={14} />, variant: "danger", onSelect: () => setDeleteProject(proj) },
+                      ]}
+                    />
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))
+          )}
+        </TableBody>
+      </Table>
 
       <ProjectDrawer
         open={formOpen}
@@ -301,6 +257,6 @@ export function AdminProjectsPage() {
         secondaryAction={{ label: "Soft delete", onAction: () => handleDelete(true) }}
         onConfirm={() => handleDelete(false)}
       />
-    </div>
+    </BasePageLayout>
   );
 }

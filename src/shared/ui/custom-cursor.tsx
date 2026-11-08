@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { gsap } from "gsap";
 import { Blobatar } from "@blobatar/react";
 import "blobatar/motion.css";
@@ -93,16 +94,16 @@ export function CustomCursor() {
 
   if (isMobile) return null;
 
-  return (
+  return createPortal(
     <>
       <div
         ref={circleRef}
-        className="fixed top-0 left-0 w-16 h-16 rounded-full bg-neutral-400/30 pointer-events-none z-9999"
+        className="fixed top-0 left-0 w-16 h-16 rounded-full bg-neutral-400/30 pointer-events-none z-[99999]"
         style={{ willChange: "transform", transform: "translate(-9999px, -9999px)" }}
       />
       <div
         ref={dotRef}
-        className="fixed -top-3 -left-2 w-12 h-12 pointer-events-none z-9999"
+        className="fixed -top-3 -left-2 w-12 h-12 pointer-events-none z-[99999]"
         style={{ willChange: "transform", transform: "translate(-9999px, -9999px)" }}
       >
         <Blobatar
@@ -113,6 +114,7 @@ export function CustomCursor() {
           className="block w-full h-full"
         />
       </div>
-    </>
+    </>,
+    document.body
   );
 }

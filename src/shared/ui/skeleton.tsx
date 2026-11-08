@@ -1,16 +1,12 @@
+import { SkeletonLine } from "@cloudflare/kumo";
+import { cn } from "@/shared/lib/utils";
 
-import { cn } from "@/shared/lib/utils"
-
-function Skeleton({
-  className,
-  ...props
-}: React.HTMLAttributes<HTMLDivElement>) {
+/**
+ * Admin skeleton built on Kumo's `SkeletonLine`, keeping the legacy
+ * `<Skeleton className="..." />` call sites working.
+ */
+export function Skeleton({ className }: { className?: string }) {
   return (
-    <div
-      className={cn("bg-accent animate-pulse rounded-md", className)}
-      {...props}
-    />
-  )
+    <SkeletonLine className={cn("h-4 w-full rounded-md", className)} />
+  );
 }
-
-export { Skeleton }

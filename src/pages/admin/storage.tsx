@@ -2,11 +2,12 @@
 // Listing comes from GET /api/v1/storage (admin-only); binaries are served
 // via GET /api/v1/storage/raw/{id}.
 import { useState, useEffect, useCallback, useRef } from "react";
+import { BasePageLayout } from "@/shared/ui/base-page-layout";
 import { Plus, Copy, ExternalLink, Eye, Loader2, FileIcon, UploadCloud, X, Trash2 } from "lucide-react";
-import { Button } from "@/shared/kumo/button";
+import { Button } from "@/shared/ui/button";
 import { Badge } from "@/shared/ui/badge";
-import { Card } from "@/shared/ui/card";
-import { Skeleton } from "@/shared/kumo/skeleton";
+import { RowActions } from "@/shared/ui/row-actions";
+import { Skeleton } from "@/shared/ui/skeleton";
 import {
   Table,
   TableHeader,
@@ -14,7 +15,7 @@ import {
   TableRow,
   TableHead,
   TableCell,
-} from "@/components/ui/table";
+} from "@/shared/ui/table";
 import { Dialog, LinkButton } from "@cloudflare/kumo";
 import {
   Sheet,
@@ -211,143 +212,107 @@ export function AdminStoragePage() {
   };
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex flex-col gap-1.5 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h2 className="text-lg font-semibold tracking-tight">Storage</h2>
-          <p className="text-sm text-muted-foreground">
-            Upload and preview binary assets — images, PDFs, videos, and more
-          </p>
-        </div>
+    <BasePageLayout
+      title="Storage"
+      subtitle="Upload and preview binary assets — images, PDFs, videos, and more"
+      headerAction={
         <Button className="gap-2 self-start" onClick={() => setUploadOpen(true)}>
           <Plus size={16} />
           Upload File
         </Button>
-      </div>
-
-      <Card className="overflow-hidden py-0">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="w-24">Preview</TableHead>
-              <TableHead>File ID</TableHead>
-              <TableHead className="w-28">Type</TableHead>
-              <TableHead className="w-24">Size</TableHead>
-              <TableHead className="w-32">Uploaded</TableHead>
-              <TableHead className="text-right" fixed="right">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {loading ? (
-              Array.from({ length: 5 }).map((_, idx) => (
-                <TableRow key={idx}>
-                  <TableCell>
-                    <Skeleton className="h-10 w-16" />
-                  </TableCell>
-                  <TableCell>
-                    <Skeleton className="h-4 w-48" />
-                  </TableCell>
-                  <TableCell>
-                    <Skeleton className="h-4 w-14" />
-                  </TableCell>
-                  <TableCell>
-                    <Skeleton className="h-4 w-12" />
-                  </TableCell>
-                  <TableCell>
-                    <Skeleton className="h-4 w-20" />
-                  </TableCell>
-                  <TableCell className="text-right" fixed="right">
-                    <div className="flex justify-end gap-1">
-                      <Skeleton className="h-8 w-8" />
-                      <Skeleton className="h-8 w-8" />
-                      <Skeleton className="h-8 w-8" />
-                      <Skeleton className="h-8 w-8" />
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))
-            ) : files.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={6} className="p-8 text-center text-muted-foreground">
-                  No files uploaded yet. Click 'Upload File' to get started.
+      }
+    >
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead className="w-24">Preview</TableHead>
+            <TableHead>File ID</TableHead>
+            <TableHead className="w-28">Type</TableHead>
+            <TableHead className="w-24">Size</TableHead>
+            <TableHead className="w-32">Uploaded</TableHead>
+            <TableHead className="text-right" fixed="right">Actions</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {loading ? (
+            Array.from({ length: 5 }).map((_, idx) => (
+              <TableRow key={idx}>
+                <TableCell>
+                  <Skeleton className="h-10 w-16" />
+                </TableCell>
+                <TableCell>
+                  <Skeleton className="h-4 w-48" />
+                </TableCell>
+                <TableCell>
+                  <Skeleton className="h-4 w-14" />
+                </TableCell>
+                <TableCell>
+                  <Skeleton className="h-4 w-12" />
+                </TableCell>
+                <TableCell>
+                  <Skeleton className="h-4 w-20" />
+                </TableCell>
+                <TableCell className="text-right" fixed="right">
+                  <Skeleton className="ml-auto size-8 rounded-md" />
                 </TableCell>
               </TableRow>
-            ) : (
-              files.map((file, idx) => (
-                <TableRow
-                  key={file.id}
-                  className="animate-content-enter"
-                  style={{ animationDelay: `${idx * 60}ms` }}
-                >
-                  <TableCell>
-                    {fileCategory(file.type) === "image" ? (
-                      <img
-                        src={file.url}
-                        alt=""
-                        loading="lazy"
-                        className="h-10 w-16 rounded-md object-cover border border-border bg-muted"
-                      />
-                    ) : (
-                      <div className="flex h-10 w-16 items-center justify-center rounded-md border border-border bg-muted text-muted-foreground">
-                        <FileIcon size={16} />
-                      </div>
-                    )}
-                  </TableCell>
-                  <TableCell className="font-mono text-sm text-foreground max-w-xs truncate">
-                    {file.id}
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant="outline" className="uppercase">{fileCategory(file.type)}</Badge>
-                  </TableCell>
-                  <TableCell className="text-muted-foreground text-xs">
-                    {formatSize(file.size)}
-                  </TableCell>
-                  <TableCell className="text-muted-foreground text-xs whitespace-nowrap">
-                    {new Date(file.createdAt).toLocaleDateString()}
-                  </TableCell>
-                  <TableCell className="text-right whitespace-nowrap" fixed="right">
-                    <div className="flex justify-end gap-1">
-                      <Button
-                        variant="ghost"
-                        size="icon-sm"
-                        onClick={() => setPreviewFile(file)}
-                        aria-label="Preview"
-                      >
-                        <Eye size={14} />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon-sm"
-                        onClick={() => handleCopy(file.url)}
-                        aria-label="Copy URL"
-                      >
-                        <Copy size={14} />
-                      </Button>
-                      <a
-                        href={file.url}
-                        target="_blank"
-                        rel="noreferrer"
-                        aria-label="Open in new tab"
-                        className="inline-flex size-8 shrink-0 cursor-pointer items-center justify-center rounded-md text-sm font-medium transition-colors hover:bg-muted hover:text-foreground"
-                      >
-                        <ExternalLink size={14} />
-                      </a>
-                      <Button
-                        variant="ghost"
-                        size="icon-sm"
-                        onClick={() => setDeleteId(file.id)}
-                        aria-label="Delete"
-                      >
-                        <Trash2 size={14} />
-                      </Button>
+            ))
+          ) : files.length === 0 ? (
+            <TableRow>
+              <TableCell colSpan={6} className="p-8 text-center text-muted-foreground">
+                No files uploaded yet. Click 'Upload File' to get started.
+              </TableCell>
+            </TableRow>
+          ) : (
+            files.map((file, idx) => (
+              <TableRow
+                key={file.id}
+                className="animate-content-enter"
+                style={{ animationDelay: `${idx * 60}ms` }}
+              >
+                <TableCell>
+                  {fileCategory(file.type) === "image" ? (
+                    <img
+                      src={file.url}
+                      alt=""
+                      loading="lazy"
+                      className="h-10 w-16 rounded-md object-cover border border-border bg-muted"
+                    />
+                  ) : (
+                    <div className="flex h-10 w-16 items-center justify-center rounded-md border border-border bg-muted text-muted-foreground">
+                      <FileIcon size={16} />
                     </div>
-                  </TableCell>
-                </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
-      </Card>
+                  )}
+                </TableCell>
+                <TableCell className="font-mono text-sm text-foreground max-w-xs truncate">
+                  {file.id}
+                </TableCell>
+                <TableCell>
+                  <Badge variant="outline" className="uppercase">{fileCategory(file.type)}</Badge>
+                </TableCell>
+                <TableCell className="text-muted-foreground text-xs">
+                  {formatSize(file.size)}
+                </TableCell>
+                <TableCell className="text-muted-foreground text-xs whitespace-nowrap">
+                  {new Date(file.createdAt).toLocaleDateString()}
+                </TableCell>
+                <TableCell className="text-right whitespace-nowrap" fixed="right">
+                  <div className="flex justify-end">
+                    <RowActions
+                      actions={[
+                        { key: "preview", label: "Preview", icon: <Eye size={14} />, onSelect: () => setPreviewFile(file) },
+                        { key: "copy", label: "Copy URL", icon: <Copy size={14} />, onSelect: () => handleCopy(file.url) },
+                        { key: "open", label: "Open in new tab", icon: <ExternalLink size={14} />, onSelect: () => window.open(file.url, "_blank", "noopener,noreferrer") },
+                        { key: "delete", label: "Delete", icon: <Trash2 size={14} />, variant: "danger", onSelect: () => setDeleteId(file.id) },
+                      ]}
+                    />
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))
+          )}
+        </TableBody>
+      </Table>
 
       <Sheet
         open={uploadOpen}
@@ -492,6 +457,6 @@ export function AdminStoragePage() {
         loading={deleting}
         onConfirm={handleDelete}
       />
-    </div>
+    </BasePageLayout>
   );
 }

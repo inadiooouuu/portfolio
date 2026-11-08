@@ -22,7 +22,6 @@ function ProjectLink({
       className="h-8 rounded-full bg-black px-3 text-xs ring-0 bg-none"
       size="sm"
       onClick={handleOnClick}
-      asChild
     >
       {children}
       <Icon className="ml-2" size={16} />

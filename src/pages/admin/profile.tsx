@@ -1,7 +1,8 @@
 import { useOutletContext } from "react-router-dom";
+import { BasePageLayout } from "@/shared/ui/base-page-layout";
 import { Upload, Loader2, CheckCircle } from "lucide-react";
 import { buttonVariants } from "@cloudflare/kumo";
-import { Button } from "@/shared/kumo/button";
+import { Button } from "@/shared/ui/button";
 import { Card, CardContent } from "@/shared/ui/card";
 import { useProfileForm } from "@/features/profile/hooks/use-profile-form";
 import { FormTextField, FormTextAreaField } from "@/shared/ui/form";
@@ -27,18 +28,12 @@ export function AdminProfilePage() {
   const avatarUrl = form.watch("avatarUrl");
 
   return (
-    <div className="flex flex-col gap-6">
-      <div>
-        <h2 className="text-lg font-semibold tracking-tight">
-          Admin Profile Settings
-        </h2>
-        <p className="text-sm text-muted-foreground">
-          Manage public administrator identity details
-        </p>
-      </div>
-
+    <BasePageLayout
+      title="Admin Profile Settings"
+      subtitle="Manage public administrator identity details"
+    >
       {status && (
-        <div className="p-4 bg-emerald-500/10 border border-emerald-500/20 text-emerald-700 text-sm rounded-lg flex items-center gap-2 font-medium animate-in fade-in duration-200">
+        <div className="p-4 mb-6 bg-emerald-500/10 border border-emerald-500/20 text-emerald-700 text-sm rounded-lg flex items-center gap-2 font-medium animate-in fade-in duration-200">
           <CheckCircle size={16} /> Profile settings updated successfully
         </div>
       )}
@@ -119,6 +114,6 @@ export function AdminProfilePage() {
           </CardContent>
         </Card>
       </form>
-    </div>
+    </BasePageLayout>
   );
 }
