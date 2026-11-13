@@ -9,11 +9,23 @@ interface ToastOptions {
   variant?: "default" | "destructive" | "success";
 }
 
+// Ding keeps errors on screen until dismissed by default; match the previous
+// auto-dismiss behaviour for transient admin actions.
+const DURATION = 5000;
+
+// Ding is silent unless sound is enabled. Browsers only allow audio after a
+// user gesture, so the first chime plays from the first click/keypress.
+const SOUND_VOLUME = 0.5;
+
 export function ToastProviderWrapper({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  React.useEffect(() => {
+    dingToast.configure({ sound: true, volume: SOUND_VOLUME });
+  }, []);
+
   return (
     <>
       {children}
@@ -22,10 +34,6 @@ export function ToastProviderWrapper({
     </>
   );
 }
-
-// Ding keeps errors on screen until dismissed by default; match the previous
-// auto-dismiss behaviour for transient admin actions.
-const DURATION = 5000;
 
 export function useToast() {
   const toast = React.useCallback(

@@ -8,33 +8,19 @@ interface LoadingAnimationProps {
 
 const BLOCK = 32
 const GAP = 6
-const PILL_WIDTH = BLOCK * 2 + GAP // 70px
+const GRID = BLOCK * 2 + GAP
 
+// Four equal tiles in a symmetric 2x2 grid. Animating borderRadius + scale
+// (instead of left/width) keeps the morph on the compositor and perfectly
+// centred, so the diamond never drifts or reflows while it spins up.
 const SHAPES = [
-  {
-    key: "red",
-    color: "#FF4229",
-    position: { left: 0, top: 0 },
-    isPill: true,
-  },
-  {
-    key: "cream",
-    color: "#FFF0D4",
-    position: { left: BLOCK + GAP + 36, top: 0 },
-    circleLeft: BLOCK + GAP,
-    isPill: false,
-  },
-  {
-    key: "purple",
-    color: "#C6B0FF",
-    position: { left: 0, top: BLOCK + GAP },
-    isPill: false,
-  },
+  { key: "red", color: "#FF4229", position: { left: 0, top: 0 } },
+  { key: "cream", color: "#FFF0D4", position: { left: BLOCK + GAP, top: 0 } },
+  { key: "purple", color: "#C6B0FF", position: { left: 0, top: BLOCK + GAP } },
   {
     key: "blue",
     color: "#7C9FFE",
     position: { left: BLOCK + GAP, top: BLOCK + GAP },
-    isPill: true,
   },
 ] as const
 
@@ -50,57 +36,46 @@ function LoadingAnimation({ className }: LoadingAnimationProps) {
     const inner = innerRef.current
     if (!container || !inner) return
 
-    const shapesInVisualOrder = CLOCKWISE_ORDER.map(
-      (i) => shapeRefs.current[i],
-    ).filter(Boolean) as HTMLDivElement[]
+    const tiles = CLOCKWISE_ORDER.map((i) => shapeRefs.current[i]).filter(
+      Boolean,
+    ) as HTMLDivElement[]
 
-    const circleLeftTargets = CLOCKWISE_ORDER.map((i) => {
-      const shape = SHAPES[i] as { circleLeft?: number; position: { left: number } }
-      return shape.circleLeft ?? shape.position.left
-    })
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches
+    if (prefersReducedMotion) return
 
     const ctx = gsap.context(() => {
+      gsap.set(inner, { rotation: 45 })
+
       const timeline = gsap.timeline({
         repeat: -1,
         yoyo: true,
-        repeatDelay: 0.3,
+        repeatDelay: 0.25,
       })
 
+      // Morph the tiles to circles in a clockwise wave while the whole grid
+      // breathes — both transform/paint only, no layout properties.
       timeline.to(
-        shapesInVisualOrder,
+        tiles,
         {
-          width: BLOCK,
-          left: (i: number) => circleLeftTargets[i],
           borderRadius: "50%",
-          duration: 0.4,
-          stagger: 0.05,
-          ease: "power3.out",
+          scale: 0.84,
+          duration: 0.55,
+          stagger: { each: 0.08, from: "start" },
+          ease: "power2.inOut",
         },
         0,
-      )
-
-      timeline.fromTo(
-        shapesInVisualOrder,
-        { scale: 1 },
-        {
-          scale: 1.1,
-          duration: 0.2,
-          stagger: 0.05,
-          ease: "power1.out",
-          yoyo: true,
-          repeat: 1,
-        },
-        0.1,
       )
 
       timeline.to(
         inner,
         {
-          rotation: "+=180",
-          duration: 0.85,
-          ease: "back.out(1.5)",
+          scale: 1.05,
+          duration: 1.15,
+          ease: "sine.inOut",
         },
-        "-=0.2",
+        0,
       )
     }, container)
 
@@ -117,13 +92,14 @@ function LoadingAnimation({ className }: LoadingAnimationProps) {
       role="status"
       aria-label="Loading"
     >
-      {/* 2x2 Rotated Container Box */}
+      {/* 2x2 rotated container box */}
       <div
         ref={innerRef}
-        className="relative rotate-45"
+        className="relative"
         style={{
-          width: BLOCK * 2 + GAP,
-          height: BLOCK * 2 + GAP,
+          width: GRID,
+          height: GRID,
+          transform: "rotate(45deg)",
         }}
       >
         {SHAPES.map((shape, index) => (
@@ -136,9 +112,9 @@ function LoadingAnimation({ className }: LoadingAnimationProps) {
             style={{
               left: shape.position.left,
               top: shape.position.top,
-              width: shape.isPill ? PILL_WIDTH : BLOCK,
+              width: BLOCK,
               height: BLOCK,
-              borderRadius: "12px",
+              borderRadius: 10,
               backgroundColor: shape.color,
             }}
           />
