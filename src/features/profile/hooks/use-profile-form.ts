@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { apiClient } from "@/shared/api/client"
+import { useToast } from "@/shared/ui/toast"
 import { Effect } from "effect"
 
 export const profileSchema = z.object({
@@ -22,9 +23,9 @@ interface UserProfile {
 }
 
 export function useProfileForm(profile: UserProfile | null, setProfile: (p: UserProfile) => void) {
+  const { toast } = useToast()
   const [saving, setSaving] = useState(false)
   const [uploading, setUploading] = useState(false)
-  const [status, setStatus] = useState<{ type: "success" | "error"; msg: string } | null>(null)
 
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileSchema),
@@ -51,15 +52,18 @@ export function useProfileForm(profile: UserProfile | null, setProfile: (p: User
     if (!file) return
 
     setUploading(true)
-    setStatus(null)
 
     Effect.runPromise(apiClient.uploadFile(file))
       .then((url) => {
         form.setValue("avatarUrl", url)
-        setStatus({ type: "success", msg: "Avatar uploaded successfully" })
+        toast({ title: "Uploaded", description: "Avatar uploaded successfully", variant: "success" })
       })
       .catch((err) => {
-        setStatus({ type: "error", msg: err.message || "Failed to upload avatar" })
+        toast({
+          title: "Upload Failed",
+          description: err.message || "Failed to upload avatar",
+          variant: "destructive",
+        })
       })
       .finally(() => {
         setUploading(false)
@@ -68,7 +72,6 @@ export function useProfileForm(profile: UserProfile | null, setProfile: (p: User
 
   const onSubmit = (data: ProfileFormValues) => {
     setSaving(true)
-    setStatus(null)
 
     Effect.runPromise(
       apiClient.put<{ success: boolean; data: UserProfile }>("/api/v1/user/profile", {
@@ -79,10 +82,14 @@ export function useProfileForm(profile: UserProfile | null, setProfile: (p: User
     )
       .then((res) => {
         setProfile(res.data)
-        setStatus({ type: "success", msg: "Profile updated successfully!" })
+        toast({ title: "Saved", description: "Profile updated successfully", variant: "success" })
       })
       .catch((err) => {
-        setStatus({ type: "error", msg: err.message || "Failed to update profile" })
+        toast({
+          title: "Update Failed",
+          description: err.message || "Failed to update profile",
+          variant: "destructive",
+        })
       })
       .finally(() => {
         setSaving(false)
@@ -93,8 +100,6 @@ export function useProfileForm(profile: UserProfile | null, setProfile: (p: User
     form,
     saving,
     uploading,
-    status,
-    setStatus,
     handleAvatarUpload,
     onSubmit: form.handleSubmit(onSubmit),
   }

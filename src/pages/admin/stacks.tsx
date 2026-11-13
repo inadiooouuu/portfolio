@@ -28,7 +28,13 @@ export function AdminStacksPage() {
         const data = res as { data: TechStack[] };
         setStacks(data.data);
       })
-      .catch((err) => console.error(err))
+      .catch((err) =>
+        toast({
+          title: "Load Failed",
+          description: err.message || "Failed to load tech stacks",
+          variant: "destructive",
+        })
+      )
       .finally(() => setLoading(false));
   };
 

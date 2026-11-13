@@ -44,7 +44,13 @@ export function AdminWorkPage() {
         const data = res.data;
         setExperiences(Array.isArray(data) ? data : (data?.experiences ?? []));
       })
-      .catch((err) => console.error(err))
+      .catch((err) =>
+        toast({
+          title: "Load Failed",
+          description: err.message || "Failed to load work experiences",
+          variant: "destructive",
+        })
+      )
       .finally(() => setLoading(false));
   };
 

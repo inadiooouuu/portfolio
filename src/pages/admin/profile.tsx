@@ -1,6 +1,6 @@
 import { useOutletContext } from "react-router-dom";
 import { BasePageLayout } from "@/shared/ui/base-page-layout";
-import { Upload, Loader2, CheckCircle } from "lucide-react";
+import { Upload, Loader2 } from "lucide-react";
 import { buttonVariants } from "@cloudflare/kumo";
 import { Button } from "@/shared/ui/button";
 import { Card, CardContent } from "@/shared/ui/card";
@@ -22,7 +22,7 @@ interface OutletContextType {
 
 export function AdminProfilePage() {
   const { profile, setProfile } = useOutletContext<OutletContextType>();
-  const { form, saving, uploading, status, handleAvatarUpload, onSubmit } =
+  const { form, saving, uploading, handleAvatarUpload, onSubmit } =
     useProfileForm(profile, setProfile);
 
   const avatarUrl = form.watch("avatarUrl");
@@ -32,12 +32,6 @@ export function AdminProfilePage() {
       title="Admin Profile Settings"
       subtitle="Manage public administrator identity details"
     >
-      {status && (
-        <div className="p-4 mb-6 bg-emerald-500/10 border border-emerald-500/20 text-emerald-700 text-sm rounded-lg flex items-center gap-2 font-medium animate-in fade-in duration-200">
-          <CheckCircle size={16} /> Profile settings updated successfully
-        </div>
-      )}
-
       <form onSubmit={onSubmit} className="max-w-2xl">
         <Card>
           <CardContent className="space-y-6">

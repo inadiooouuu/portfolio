@@ -23,7 +23,13 @@ export function AdminArticlesPage() {
     setLoading(true);
     Effect.runPromise(apiClient.get("/api/v1/articles"))
       .then((res: any) => { setArticles(res.data); })
-      .catch((err) => console.error(err))
+      .catch((err) =>
+        toast({
+          title: "Load Failed",
+          description: err.message || "Failed to load articles",
+          variant: "destructive",
+        })
+      )
       .finally(() => setLoading(false));
   };
 

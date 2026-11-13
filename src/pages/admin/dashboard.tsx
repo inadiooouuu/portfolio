@@ -6,6 +6,7 @@ import { AdminSidebar } from "./sidebar";
 import { AdminHeader, type HeaderUser } from "@/shared/ui/header";
 import { FullScreenLoader } from "@/shared/ui/full-screen-loader";
 import { apiClient } from "@/shared/api/client";
+import { useToast } from "@/shared/ui/toast";
 import { Effect } from "effect";
 
 interface UserProfile extends HeaderUser {
@@ -19,6 +20,7 @@ interface UserProfile extends HeaderUser {
 export function AdminDashboardPage() {
   const navigate = useNavigate();
   const location = useLocation();
+  const { toast } = useToast();
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loadingProfile, setLoadingProfile] = useState(true);
 
@@ -37,18 +39,23 @@ export function AdminDashboardPage() {
         setProfile(res.data);
       })
       .catch((err) => {
-        console.error("Failed to load profile", err);
+        toast({
+          title: "Session Expired",
+          description: err.message || "Please sign in again",
+          variant: "destructive",
+        });
         apiClient.removeToken();
         navigate("/admin/login");
       })
       .finally(() => {
         setLoadingProfile(false);
       });
-  }, [navigate]);
+  }, [navigate, toast]);
 
   const handleLogout = () => {
     apiClient.removeToken();
     navigate("/admin/login");
+    toast({ title: "Signed Out", description: "You have been logged out" });
   };
 
   if (loadingProfile) {

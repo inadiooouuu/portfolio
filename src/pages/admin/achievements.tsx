@@ -30,7 +30,13 @@ export function AdminAchievementsPage() {
       .then((res: any) => {
         setAchievements(res.data);
       })
-      .catch((err) => console.error(err))
+      .catch((err) =>
+        toast({
+          title: "Load Failed",
+          description: err.message || "Failed to load achievements",
+          variant: "destructive",
+        })
+      )
       .finally(() => setLoading(false));
   };
 

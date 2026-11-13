@@ -388,3 +388,16 @@ body {
         animation: none;
     }
 }
+
+/* Ding toast (src/shared/ui/toast.tsx) — match the app's surfaces and palette.
+   The doubled class beats the injected defaults regardless of stylesheet order. */
+.tst-viewport.tst-viewport {
+    --tst-bg: var(--popover);
+    --tst-fg: var(--popover-foreground);
+    --tst-success: #10b981;
+    --tst-error: var(--destructive);
+    --tst-warning: #f59e0b;
+    --tst-info: #0ea5e9;
+    --tst-radius: 12px;
+    font-family: var(--font-sans);
+}

@@ -51,14 +51,26 @@ export function AdminProjectsPage() {
     setLoading(true);
     Effect.runPromise(apiClient.get<ApiResponse<Project[]>>("/api/v1/projects"))
       .then((res) => setProjects(res.data))
-      .catch((err) => console.error(err))
+      .catch((err) =>
+        toast({
+          title: "Load Failed",
+          description: err.message || "Failed to load projects",
+          variant: "destructive",
+        })
+      )
       .finally(() => setLoading(false));
   };
 
   const fetchTechStacks = () => {
     Effect.runPromise(apiClient.get<ApiResponse<TechStack[]>>("/api/v1/tech-stacks"))
       .then((res) => setAllStacks(res.data))
-      .catch((err) => console.error(err));
+      .catch((err) =>
+        toast({
+          title: "Load Failed",
+          description: err.message || "Failed to load tech stacks",
+          variant: "destructive",
+        })
+      );
   };
 
   useEffect(() => {
