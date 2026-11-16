@@ -9,6 +9,9 @@ import {
   useLocation,
 } from "react-router-dom"
 import { LinkProvider } from "@cloudflare/kumo"
+import { ReactLenis, useLenis } from "lenis/react"
+import { ScrollTrigger } from "gsap/ScrollTrigger"
+import "lenis/dist/lenis.css"
 import { HomePage } from "@/pages/home"
 import { ToastProviderWrapper } from "@/shared/ui/toast"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
@@ -92,44 +95,52 @@ function PageFallback() {
 function App() {
   useGridPattern()
 
+  // ponytail: useLenis hook ties Lenis scroll events to ScrollTrigger.
+  // upgrades to custom ticker loop if horizontal pin desyncs.
+  useLenis(() => {
+    ScrollTrigger.update()
+  })
+
   return (
-    <QueryClientProvider client={queryClient}>
-      <ToastProviderWrapper>
-        <CustomCursor />
-        <BrowserRouter>
-          <LinkProvider component={KumoRouterLink}>
-            <Suspense fallback={<PageFallback />}>
-              <Routes>
-                <Route path="/" element={<HomePage />} />
-                <Route path="/about" element={<AboutPage />} />
-                <Route path="/projects" element={<ProjectsPage />} />
-                <Route path="/projects/:slug" element={<ProjectDetailPage />} />
-                <Route path="/admin/login" element={<AdminLoginPage />} />
+    <ReactLenis root options={{ autoRaf: true, smoothWheel: true }}>
+      <QueryClientProvider client={queryClient}>
+        <ToastProviderWrapper>
+          <CustomCursor />
+          <BrowserRouter>
+            <LinkProvider component={KumoRouterLink}>
+              <Suspense fallback={<PageFallback />}>
+                <Routes>
+                  <Route path="/" element={<HomePage />} />
+                  <Route path="/about" element={<AboutPage />} />
+                  <Route path="/projects" element={<ProjectsPage />} />
+                  <Route path="/projects/:slug" element={<ProjectDetailPage />} />
+                  <Route path="/admin/login" element={<AdminLoginPage />} />
 
-                {/* protected admin layout wrapper */}
-                <Route path="/admin" element={<AdminDashboardPage />}>
-                  <Route index element={<Navigate to="/admin/projects" replace />} />
-                  <Route path="dashboard" element={<Navigate to="/admin/projects" replace />} />
-                  <Route path="projects" element={<AdminProjectsPage />} />
-                  <Route path="stacks" element={<AdminStacksPage />} />
-                  <Route path="articles" element={<AdminArticlesPage />} />
-                  <Route path="achievements" element={<AdminAchievementsPage />} />
-                  <Route path="work" element={<AdminWorkPage />} />
-                  <Route path="storage" element={<AdminStoragePage />} />
-                  <Route path="profile" element={<AdminProfilePage />} />
-                </Route>
+                  {/* protected admin layout wrapper */}
+                  <Route path="/admin" element={<AdminDashboardPage />}>
+                    <Route index element={<Navigate to="/admin/projects" replace />} />
+                    <Route path="dashboard" element={<Navigate to="/admin/projects" replace />} />
+                    <Route path="projects" element={<AdminProjectsPage />} />
+                    <Route path="stacks" element={<AdminStacksPage />} />
+                    <Route path="articles" element={<AdminArticlesPage />} />
+                    <Route path="achievements" element={<AdminAchievementsPage />} />
+                    <Route path="work" element={<AdminWorkPage />} />
+                    <Route path="storage" element={<AdminStoragePage />} />
+                    <Route path="profile" element={<AdminProfilePage />} />
+                  </Route>
 
-                {/* Legacy redirect for /admin/dashboard */}
-                <Route path="/admin/dashboard" element={<Navigate to="/admin/projects" replace />} />
+                  {/* Legacy redirect for /admin/dashboard */}
+                  <Route path="/admin/dashboard" element={<Navigate to="/admin/projects" replace />} />
 
-                {/* Catch-all 404 */}
-                <Route path="*" element={<NotFoundPage />} />
-              </Routes>
-            </Suspense>
-          </LinkProvider>
-        </BrowserRouter>
-      </ToastProviderWrapper>
-    </QueryClientProvider>
+                  {/* Catch-all 404 */}
+                  <Route path="*" element={<NotFoundPage />} />
+                </Routes>
+              </Suspense>
+            </LinkProvider>
+          </BrowserRouter>
+        </ToastProviderWrapper>
+      </QueryClientProvider>
+    </ReactLenis>
   )
 }
 

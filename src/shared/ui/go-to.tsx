@@ -1,5 +1,6 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import type { MouseEvent, ReactNode } from "react";
+import { useLenis } from "lenis/react";
 import { cn } from "@/shared/lib/utils";
 
 interface GoToProps {
@@ -11,10 +12,28 @@ interface GoToProps {
 export function GoTo({ to, className, children }: GoToProps) {
   const navigate = useNavigate();
   const { pathname } = useLocation();
+  const lenis = useLenis();
 
+  // ponytail: native document.startViewTransition for cross-page route morphing.
+  // falls back to standard navigate if browser does not support View Transitions API.
   if (to.startsWith("/")) {
+    const handleRouteTransition = (e: MouseEvent<HTMLAnchorElement>) => {
+      e.preventDefault();
+      if (pathname === to) {
+        lenis ? lenis.scrollTo(0, { immediate: false }) : window.scrollTo({ top: 0, behavior: "smooth" });
+        return;
+      }
+      if ("startViewTransition" in document) {
+        document.startViewTransition(() => {
+          navigate(to);
+        });
+      } else {
+        navigate(to);
+      }
+    };
+
     return (
-      <Link to={to} className={className}>
+      <Link to={to} onClick={handleRouteTransition} className={className}>
         {children}
       </Link>
     );
@@ -26,9 +45,13 @@ export function GoTo({ to, className, children }: GoToProps) {
     e.preventDefault();
 
     const scrollTo = () => {
-      document
-        .getElementById(id)
-        ?.scrollIntoView({ behavior: "smooth", block: "start" });
+      if (lenis) {
+        lenis.scrollTo(`#${id}`);
+      } else {
+        document
+          .getElementById(id)
+          ?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
     };
 
     if (pathname === "/") {
@@ -36,8 +59,14 @@ export function GoTo({ to, className, children }: GoToProps) {
       return;
     }
 
-    navigate("/");
-    window.setTimeout(scrollTo, 100);
+    if ("startViewTransition" in document) {
+      document.startViewTransition(() => {
+        navigate("/");
+      });
+    } else {
+      navigate("/");
+    }
+    window.setTimeout(scrollTo, 120);
   };
 
   return (
