@@ -6,80 +6,87 @@ interface LoadingAnimationProps {
   className?: string
 }
 
-const BLOCK = 32
-const GAP = 6
-const GRID = BLOCK * 2 + GAP
+const TILE_SIZE = 22
+const WHEEL_SIZE = 72
+const CENTER = WHEEL_SIZE / 2
+const RADIUS = 22
 
-// Four equal tiles in a symmetric 2x2 grid. Animating borderRadius + scale
-// (instead of left/width) keeps the morph on the compositor and perfectly
-// centred, so the diamond never drifts or reflows while it spins up.
 const SHAPES = [
-  { key: "red", color: "#FF4229", position: { left: 0, top: 0 } },
-  { key: "cream", color: "#FFF0D4", position: { left: BLOCK + GAP, top: 0 } },
-  { key: "purple", color: "#C6B0FF", position: { left: 0, top: BLOCK + GAP } },
-  {
-    key: "blue",
-    color: "#7C9FFE",
-    position: { left: BLOCK + GAP, top: BLOCK + GAP },
-  },
+  { key: "red", color: "#FF4229" },
+  { key: "cream", color: "#FFF0D4" },
+  { key: "purple", color: "#C6B0FF" },
+  { key: "blue", color: "#7C9FFE" },
+  { key: "orange", color: "#FFAA70" },
 ] as const
 
-const CLOCKWISE_ORDER = [0, 1, 3, 2]
+// Five equally spaced points on a regular pentagon.
+const getPointPosition = (index: number) => {
+  const angle = ((index * 72 - 90) * Math.PI) / 180
+
+  return {
+    left: CENTER + RADIUS * Math.cos(angle) - TILE_SIZE / 2,
+    top: CENTER + RADIUS * Math.sin(angle) - TILE_SIZE / 2,
+  }
+}
 
 function LoadingAnimation({ className }: LoadingAnimationProps) {
   const containerRef = useRef<HTMLDivElement>(null)
-  const innerRef = useRef<HTMLDivElement>(null)
-  const shapeRefs = useRef<(HTMLDivElement | null)[]>([])
+  const wheelRef = useRef<HTMLDivElement>(null)
+  const tileRefs = useRef<(HTMLDivElement | null)[]>([])
 
   useLayoutEffect(() => {
     const container = containerRef.current
-    const inner = innerRef.current
-    if (!container || !inner) return
+    const wheel = wheelRef.current
+    if (!container || !wheel) return
 
-    const tiles = CLOCKWISE_ORDER.map((i) => shapeRefs.current[i]).filter(
-      Boolean,
-    ) as HTMLDivElement[]
+    const tiles = tileRefs.current.filter(
+      (tile): tile is HTMLDivElement => tile !== null,
+    )
 
-    const prefersReducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches
-    if (prefersReducedMotion) return
+    const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)")
+    if (motionQuery.matches) return
 
-    const ctx = gsap.context(() => {
-      gsap.set(inner, { rotation: 45 })
-
-      const timeline = gsap.timeline({
-        repeat: -1,
-        yoyo: true,
-        repeatDelay: 0.25,
+    const context = gsap.context(() => {
+      gsap.set(wheel, {
+        rotation: 0,
+        scale: 1,
+        transformOrigin: "50% 50%",
+        force3D: true,
       })
 
-      // Morph the tiles to circles in a clockwise wave while the whole grid
-      // breathes — both transform/paint only, no layout properties.
-      timeline.to(
-        tiles,
-        {
-          borderRadius: "50%",
-          scale: 0.84,
-          duration: 0.55,
-          stagger: { each: 0.08, from: "start" },
-          ease: "power2.inOut",
-        },
-        0,
-      )
+      gsap.set(tiles, {
+        transformOrigin: "50% 50%",
+        force3D: true,
+      })
 
-      timeline.to(
-        inner,
-        {
-          scale: 1.05,
-          duration: 1.15,
-          ease: "sine.inOut",
-        },
-        0,
-      )
+      // Faster, eased wheel rotation with a seamless full-turn loop.
+      const ROTATION_DURATION = 1.8
+      gsap.to(wheel, {
+        rotation: 360,
+        duration: ROTATION_DURATION,
+        ease: "none",
+        repeat: -1,
+      })
+
+      // Zoom follows rotation in a wave along circle order.
+      // ponytail: fixed scale range 0.85 - 1.15, add config prop if callers need different depth.
+      tiles.forEach((tile, index) => {
+        gsap.fromTo(
+          tile,
+          { scale: 0.85 },
+          {
+            scale: 1.15,
+            duration: ROTATION_DURATION / 2,
+            ease: "sine.inOut",
+            yoyo: true,
+            repeat: -1,
+            delay: (index / tiles.length) * ROTATION_DURATION,
+          },
+        )
+      })
     }, container)
 
-    return () => ctx.revert()
+    return () => context.revert()
   }, [])
 
   return (
@@ -92,33 +99,36 @@ function LoadingAnimation({ className }: LoadingAnimationProps) {
       role="status"
       aria-label="Loading"
     >
-      {/* 2x2 rotated container box */}
       <div
-        ref={innerRef}
+        ref={wheelRef}
         className="relative"
         style={{
-          width: GRID,
-          height: GRID,
-          transform: "rotate(45deg)",
+          width: WHEEL_SIZE,
+          height: WHEEL_SIZE,
         }}
       >
-        {SHAPES.map((shape, index) => (
-          <div
-            key={shape.key}
-            ref={(el) => {
-              shapeRefs.current[index] = el
-            }}
-            className="absolute"
-            style={{
-              left: shape.position.left,
-              top: shape.position.top,
-              width: BLOCK,
-              height: BLOCK,
-              borderRadius: 10,
-              backgroundColor: shape.color,
-            }}
-          />
-        ))}
+        {SHAPES.map((shape, index) => {
+          const position = getPointPosition(index)
+
+          return (
+            <div
+              key={shape.key}
+              ref={(element) => {
+                tileRefs.current[index] = element
+              }}
+              className="absolute"
+              style={{
+                left: position.left,
+                top: position.top,
+                width: TILE_SIZE,
+                height: TILE_SIZE,
+                borderRadius: "50%",
+                backgroundColor: shape.color,
+                willChange: "transform",
+              }}
+            />
+          )
+        })}
       </div>
     </div>
   )
