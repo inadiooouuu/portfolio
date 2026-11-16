@@ -5,12 +5,12 @@ export const WAVE_COLOR_ACTIVE = "#939efb";
 
 const HEIGHT = 64;
 const BASELINE = HEIGHT / 2;
-const MIN_AMPLITUDE = 7;
-const MAX_AMPLITUDE = 16;
-// Jarak rata-rata antar titik gelombang (px). Makin kecil = makin rapat.
-const STEP = 56;
+const MIN_AMPLITUDE = 6;
+const MAX_AMPLITUDE = 14;
+// Jarak rata-rata antar titik gelombang (px). Makin besar = makin halus dan renggang.
+const STEP = 80;
 // Peluang puncak/lembah berganti arah di titik berikutnya (sisanya melanjutkan arah yang sama).
-const FLIP_CHANCE = 0.8;
+const FLIP_CHANCE = 0.6;
 
 type Point = { x: number; y: number };
 
@@ -113,7 +113,8 @@ export function WorkExperienceWave({
 
   return (
     <div
-      className="pointer-events-none absolute inset-x-0 top-16 h-16"
+      className="pointer-events-none absolute left-0 top-16 h-16"
+      style={{ width: end }}
       aria-hidden="true"
     >
       <svg
@@ -123,11 +124,11 @@ export function WorkExperienceWave({
         viewBox={`0 0 ${end} ${HEIGHT}`}
         fill="none"
       >
-        <path d={path} stroke={WAVE_COLOR} strokeWidth={1.25} />
+        <path d={path} stroke={WAVE_COLOR} strokeWidth={1.5} />
       </svg>
 
       <div
-        className="absolute inset-y-0 left-0 overflow-hidden"
+        className="absolute inset-y-0 left-0 overflow-hidden transition-[width] duration-300 ease-out"
         style={{ width: "calc(var(--timeline-progress, 0) * 100%)" }}
       >
         <svg
@@ -137,7 +138,7 @@ export function WorkExperienceWave({
           viewBox={`0 0 ${end} ${HEIGHT}`}
           fill="none"
         >
-          <path d={path} stroke={WAVE_COLOR_ACTIVE} strokeWidth={1.5} />
+          <path d={path} stroke={WAVE_COLOR_ACTIVE} strokeWidth={1.75} />
         </svg>
       </div>
     </div>

@@ -41,16 +41,16 @@ export function WorkExperienceList() {
     return (
       <section
         id="experience"
-        className="border-t border-gray-100 px-4 py-16 md:py-24"
+        className="border-t border-gray-100 px-4 py-20 md:py-28 lg:py-32"
       >
         <div className="mx-auto max-w-5xl">
-          <div className="mb-6 md:mb-8">
+          <div className="mb-8 md:mb-12">
             <ExperienceHeader />
           </div>
           <div className="space-y-0 divide-y divide-gray-100">
             {Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="py-6 first:pt-0 last:pb-0">
-                <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:gap-4">
+              <div key={i} className="py-8 first:pt-0 last:pb-0">
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:gap-6">
                   <div className="flex shrink-0 items-center gap-3 sm:w-48">
                     <Skeleton className="h-10 w-10 shrink-0 rounded-full" />
                     <div className="flex flex-col gap-2">
@@ -75,10 +75,10 @@ export function WorkExperienceList() {
     return (
       <section
         id="experience"
-        className="border-t border-gray-100 px-4 py-16 md:py-24"
+        className="border-t border-gray-100 px-4 py-20 md:py-28 lg:py-32"
       >
         <div className="mx-auto max-w-5xl">
-          <div className="mb-6 md:mb-8">
+          <div className="mb-8 md:mb-12">
             <ExperienceHeader />
           </div>
           <p className="text-sm text-gray-400">
@@ -96,8 +96,8 @@ export function WorkExperienceList() {
 
   return (
     <section id="experience" className="border-t border-gray-100">
-      <div className="mx-auto max-w-5xl px-4 pt-16 md:pt-24">
-        <div className="mb-6 md:mb-8">
+      <div className="mx-auto max-w-5xl px-4 pt-20 md:pt-28 lg:pt-32">
+        <div className="mb-8 md:mb-12">
           <ExperienceHeader />
         </div>
       </div>
@@ -110,7 +110,7 @@ export function WorkExperienceList() {
           enabled={showStage}
         />
       ) : (
-        <div className="mx-auto max-w-5xl px-4 pb-16 md:pb-24">
+        <div className="mx-auto max-w-5xl px-4 pb-20 md:pb-28 lg:pb-32">
           <WorkExperienceVerticalList experiences={experiences} />
         </div>
       )}

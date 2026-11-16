@@ -24,12 +24,11 @@ export function WorkExperiencePanel({
       aria-label={`Experience ${index + 1} of ${total}: ${experience.title}`}
       aria-hidden={!isActive}
       inert={!isActive}
-      className="relative h-full w-[78vw] max-w-[980px] shrink-0 pt-32"
+      className="relative h-full w-[80vw] max-w-[1020px] shrink-0 pt-36"
     >
       <p
         className={cn(
-          "absolute left-0 top-14 text-sm tracking-[-0.01em] transition-colors duration-300",
-          isActive ? "text-#939efb" : "text-neutral-400",
+          "absolute left-0 top-14 text-sm tracking-[-0.01em] transition-colors duration-300 text-neutral-400",
         )}
       >
         {formatDateRange(experience.start_date, experience.end_date)}
@@ -38,12 +37,12 @@ export function WorkExperiencePanel({
       <span
         aria-hidden="true"
         className={cn(
-          "absolute left-0 top-24 h-4 w-4 -translate-y-1/2 rounded-full border-2 border-[#111111] transition-all duration-300",
-          isActive ? "scale-125 bg-[#111111]" : "bg-white",
+          "absolute left-0 top-24 h-4 w-4 -translate-y-1/2 rounded-full border-2 border-[#111111] transition-all duration-500 ease-out",
+          isActive ? "scale-125 bg-[#111111] shadow-[0_0_12px_rgba(17,17,17,0.2)]" : "bg-white",
         )}
       />
 
-      <div className="grid grid-cols-[minmax(0,420px)_minmax(0,1fr)] items-center gap-12">
+      <div className="grid grid-cols-[minmax(0,440px)_minmax(0,1fr)] items-center gap-14">
         <WorkExperienceBounceCards
           images={experience.images ?? []}
           alt={experience.title}
@@ -64,13 +63,13 @@ export function WorkExperiencePanel({
             </h3>
           </div>
 
-          <p className="mt-5 text-sm leading-relaxed text-neutral-400">
+          <p className="mt-6 text-sm leading-relaxed text-neutral-400">
             {experience.description}
           </p>
 
           {experience.job_descriptions &&
             experience.job_descriptions.length > 0 && (
-              <ul className="mt-5 space-y-2">
+              <ul className="mt-6 space-y-3">
                 {experience.job_descriptions.map((description) => (
                   <li
                     key={description.id}
@@ -89,7 +88,7 @@ export function WorkExperiencePanel({
               target="_blank"
               rel="noreferrer"
               tabIndex={isActive ? 0 : -1}
-              className="mt-6 flex w-fit items-center justify-center gap-1 rounded-full border border-neutral-200 px-4 py-2 text-xs text-neutral-400 underline underline-offset-4 transition-colors duration-300 hover:bg-neutral-100 hover:text-[#111111]"
+              className="mt-8 flex w-fit items-center justify-center gap-1 rounded-full border border-neutral-200 px-4 py-2 text-xs text-neutral-400 underline underline-offset-4 transition-colors duration-300 hover:bg-neutral-100 hover:text-[#111111]"
             >
               <span>Visit company</span>
               <ArrowRight size={12} />

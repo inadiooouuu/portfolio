@@ -44,10 +44,10 @@ export function WorkExperienceVerticalList({
       {experiences.map((exp) => (
         <div
           key={exp.id}
-          className="group py-6 first:pt-0 last:pb-0"
+          className="group py-8 first:pt-0 last:pb-0"
           data-work-card
         >
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:gap-4">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:gap-6">
             <div className="flex shrink-0 items-center gap-3 sm:w-48">
               {exp.company_url ? (
                 <img
@@ -78,7 +78,7 @@ export function WorkExperienceVerticalList({
               </p>
 
               {exp.job_descriptions && exp.job_descriptions.length > 0 && (
-                <ul className="mt-3 space-y-1.5">
+                <ul className="mt-4 space-y-2.5">
                   {exp.job_descriptions.map((desc) => (
                     <li
                       key={desc.id}
@@ -96,7 +96,7 @@ export function WorkExperienceVerticalList({
                   href={exp.redirect_url}
                   target="_blank"
                   rel="noreferrer"
-                  className="mt-3 flex w-fit items-center justify-center gap-1 rounded-full border border-neutral-200 px-4 py-2 text-xs text-neutral-400 underline underline-offset-4 transition-colors duration-300 hover:bg-neutral-100 hover:text-[#111111]"
+                  className="mt-4 flex w-fit items-center justify-center gap-1 rounded-full border border-neutral-200 px-4 py-2 text-xs text-neutral-400 underline underline-offset-4 transition-colors duration-300 hover:bg-neutral-100 hover:text-[#111111]"
                 >
                   <span>Visit company</span>
                   <ArrowRight size={12} />

@@ -40,48 +40,51 @@ export function useWorkExperienceScroll({
       if (distance() <= 0) return;
 
       let lastIndex = 0;
+      const ease = gsap.parseEase("power1.inOut");
 
       const ctx = gsap.context(() => {
         gsap.to(track, {
           x: () => -distance(),
-          ease: "none",
+          ease: "power1.inOut",
           scrollTrigger: {
             trigger: stage,
             start: "top top",
-            end: () => `+=${distance()}`,
+            end: () => `+=${Math.round(distance() * 1.2)}`,
             pin: true,
             pinSpacing: true,
-            scrub: 0.6,
+            scrub: 0.8,
             anticipatePin: 1,
             invalidateOnRefresh: true,
-            onUpdate: (self) => {
-              const index = Math.min(
-                count - 1,
-                Math.max(0, Math.round(self.progress * (count - 1))),
-              );
-
-              if (index !== lastIndex) {
-                lastIndex = index;
-                callbackRef.current(index);
-              }
-
-              stage.style.setProperty(
-                "--timeline-progress",
-                String(self.progress),
-              );
-            },
             onRefresh: (self) => {
+              const eased = ease(self.progress);
               const index = Math.min(
                 count - 1,
-                Math.max(0, Math.round(self.progress * (count - 1))),
+                Math.max(0, Math.round(eased * (count - 1))),
               );
               lastIndex = index;
               callbackRef.current(index);
               stage.style.setProperty(
                 "--timeline-progress",
-                String(self.progress),
+                eased.toFixed(4),
               );
             },
+          },
+          onUpdate: function () {
+            const eased = ease(this.progress());
+            stage.style.setProperty(
+              "--timeline-progress",
+              eased.toFixed(4),
+            );
+
+            const index = Math.min(
+              count - 1,
+              Math.max(0, Math.round(eased * (count - 1))),
+            );
+
+            if (index !== lastIndex) {
+              lastIndex = index;
+              callbackRef.current(index);
+            }
           },
         });
       }, stage);

@@ -64,11 +64,11 @@ export function WorkExperienceStage({
     >
       <div
         ref={trackRef}
-        className="flex h-full w-max items-center gap-16 pt-16 px-[max(2rem,calc((100vw-64rem)/2))] will-change-transform"
+        className="flex h-full w-max items-center gap-28 pt-20 px-[max(3rem,calc((100vw-64rem)/2))] pr-[max(12rem,calc((100vw-64rem)/2))] will-change-transform"
       >
         <div
           ref={innerRef}
-          className="relative flex h-full items-center gap-16"
+          className="relative flex h-full items-center gap-28"
         >
           <WorkExperienceWave width={layout.width} starts={layout.starts} />
 
